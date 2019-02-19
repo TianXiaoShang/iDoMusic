@@ -3,26 +3,23 @@
         <div class="category">
             <span 
             class="item"
-            :class="{active : item.typeNum == clickIndex}" 
-            v-for="(item, index) in categoryData.categorys" 
+            :class="{active : item.fatherNum == currentFather}" 
+            v-for="(item, index) in categoryData.fathers" 
             :key="index" 
             data-myyIndex="111"
-            @click="selectClass(item.typeNum,$event)"
-            >{{item.typeName}}</span>
+            @click="changeFather(item.fatherNum)"
+            >{{item.fatherName}}</span>
         </div>
         <div class="childerns" v-show="typeShow">
             <div class="types-wrap">
                 <span class="types"
-                v-for="(item, index) in categoryData.types" :key="index"
-                v-show="item.category == clickIndex"
-                @click="selectType(item.name,item.category)"
+                v-for="(item, index) in categoryData.children" :key="index"
+                v-show="item.category == currentFather"
+                @click="changeChild(item.name,item.category,item.resourceType)"
                 :class="{active : item.name == currentName}"
                 >{{item.name}}</span>
             </div>
         </div>
-        <!-- <div class="hintTitle">
-            {{hintTitle}}
-        </div> -->
     </div>
 </template>
 
@@ -30,14 +27,13 @@
 export default {
     name:'Category',
     props:{
-        categoryData:Object
+        categoryData:Object   //传入数据结构为{fathers:[{fatherNum:xx,fatherName}...],children:[{name:xxx,category:xxx}...]}
     },
     data(){
         return{
-            clickIndex:-1,
+            currentFather:-1,
             currentName:null,
             typeShow:true,
-            // hintTitle:"全部歌单"
         }
     },
     mounted(){
@@ -45,32 +41,28 @@ export default {
     },
    
     methods:{
-        selectClass(e,$event){
-            this.typeShow = e == this.clickIndex ? !this.typeShow : true
-            this.clickIndex = e
-            // this.hintTitle = e == -1 ? "全部歌单" : this.hintTitle
-            if( e == -1){
+        changeFather(fatherIndex){
+            this.typeShow = fatherIndex == this.currentFather ? !this.typeShow : true
+            this.currentFather = fatherIndex                          //控制father样式及children隐藏/显示
+            if( fatherIndex == -1){
                 this.changeType()
             }
         },
-        selectType(type,category){
-            this.currentName = type
-            setTimeout(() => {        //为了给用户看到点击后的反应而延迟隐藏
+        changeChild(childName,category, resourceType){
+            this.currentName = childName
+            setTimeout(() => {                                       //为了给用户看到点击后的反应而延迟隐藏
                 this.typeShow = false
             },100)
-            this.changeType(category,type)
+            this.changeType(category,childName,resourceType)
         },
-        changeType(category,type){
-            // this.hintTitle = this.categoryData.categorys[category+1].typeName + ' / ' + type 
-            // console.log(this.hintTitle)
+        changeType(category,typeName,resourceType){
             this.$emit("changeType",{
-                category,
-                type
+                category,     //从属父级类型
+                typeName,     //当前标签名字
+                resourceType, //当前标签标识ID
             })
         }
     }
-
-
 }
 </script>
 
@@ -83,8 +75,6 @@ export default {
         padding 0px 10px
         background white
         display flex
-        // align-items center
-        // justify-content space-around
         border-bottom 1px solid $themeColor
         .item
             flex-grow 1
@@ -94,8 +84,6 @@ export default {
             height 100%
             line-height 40px
             &.active
-                // border-bottom 1px solid $themeColor
-                // background $gray
                 border-radius 6px 6px 0 0 
                 color $themeColor
     .childerns
@@ -105,7 +93,6 @@ export default {
         background white
         opacity 0.92
         .types-wrap
-            // border-top 1px solid $themeColor
             box-sizing border-box
             display flex
             justify-content flex-sart
@@ -117,11 +104,10 @@ export default {
                 text-align center
                 font-size 14px
                 display block
-                width 20%
+                width 33.33%
                 padding 8px
                 color $fontGray
                 background $BgGray
-                // margin:0px 0px -1px -1px
                 white-space nowrap
                 overflow hidden
                 text-overflow ellipsis
@@ -139,18 +125,6 @@ export default {
                     height 6px
                     border-radius 50%
                     background $themeColor
-    // .hintTitle
-    //     display inline-block
-    //     // box-sizing border-box
-    //     // width 100%
-    //     font-size 12px
-    //     line-height 12px
-    //     height 12px
-    //     color $fontGray
-    //     text-align center
-    //     padding 4px 15px
-    //     border-radius 18px
-    //     border 1px solid $themeColor
 
 </style>
 

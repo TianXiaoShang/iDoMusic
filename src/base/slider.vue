@@ -91,7 +91,7 @@ export default {
         this.slider = new Bscroll(this.$refs.sliderWrap, {
             scrollY:false,        //y轴不需要滚动
             scrollX:true,         //x轴需要滚动
-            momentum: true,       //是否开启滑动惯性快速滚动多张轮播
+            momentum: false,       //是否开启滑动惯性快速滚动多张轮播
             click:true,
             // snap:true,//给slider组件设置
             snap:{
@@ -133,11 +133,17 @@ export default {
 @import "~common/styles/variable"
 .wrap
     width 100%
-    height 100px
-    background $themeColor
-    border-radius 0 0 10px 10px
-    padding-top 8px
+    position relative
+    &:before
+        position absolute
+        width 100%
+        content ''
+        display block
+        height 100px
+        background $themeColor
+        border-radius 0 0 10px 10px
     .sliderWrap
+        // padding-top 8px
         position relative
         width 95%
         margin 0 auto

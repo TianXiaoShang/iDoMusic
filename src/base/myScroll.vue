@@ -82,10 +82,10 @@
         this.scroll && this.scroll.enable()
       },
       refresh() {
+        console.log('refresh')
         this.scroll && this.scroll.refresh()
       },
       scrollTo() {
-        console.log(arguments)
         this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments)
       },
       scrollToElement() {

@@ -2,10 +2,15 @@
     <div class="rankWrap">
         <my-scroll :data="rankDataMore" class="scroll-wrap">
             <div class="scroll-content">
-                <div class="rank-list-wrap">
+                <div class="rank-list-wrap" v-if="rankDataDetail.length">
                     <div class="rank-type-name">iDo官方榜</div>
                     <div class="content-wrap">
-                        <div class="rank-item" v-for="(item,index) in rankDataDetail" :key="index">
+                        <div 
+                        class="rank-item" 
+                        v-for="(item,index) in rankDataDetail" 
+                        :key="index" 
+                        @click="onClick(item.id)"
+                        >
                             <div class="item-cover">
                                 <img :src="item.coverImgUrl" alt="" class="cover-img">
                                 <div class="filter"></div>
@@ -19,19 +24,23 @@
                         </div>
                     </div>
                 </div>
-                <grid-list :data="rankDataMore" :typeName="typeName"></grid-list>
+                <song-list 
+                :songListData="rankDataMore" 
+                :titleTypeName="titleTypeName"
+                ></song-list>
             </div>
+            <loading v-if="loadingStatus"></loading>
         </my-scroll>
-
-        <!-- 1111 -->
     </div>
 </template>
 
 <script>
 import getRankData from "api/rank"
-import gridList from "base/gridList"
+import songList from "base/songList"
 import { STATUS_TEXT } from "api/config"
 import myScroll from "base/myScroll"
+import loading from 'base/loading'
+import {_creatGridData} from "common/js/creatListData"
 
 export default {
     name:"Rank",
@@ -39,31 +48,43 @@ export default {
         return {
             rankDataDetail:[],
             rankDataMore:[],
-            typeName:'iDo全球榜'
+            titleTypeName:"iDo全球榜",
+            loadingStatus:false
         }
     },
     components:{
-        gridList,
-        myScroll
+        songList,
+        myScroll,
+        loading
     },
     created(){
         this._getRankData()
     },
     methods:{
         _getRankData(){
+            this.loadingStatus = true
             getRankData().then(res => this._handleRankData(res))
         },
         _handleRankData(res){
-            console.log(res.data.list)
             if(res && res.statusText === STATUS_TEXT){
                 this.rankDataDetail = res.data.list.splice(0,4)
-                this.rankDataMore = res.data.list
-                console.log(this.rankDataMore)
+                this.rankDataMore = this.creatData(res.data.list)
+                this.loadingStatus = false
             }
         },
         filterSong(index,first,second){
             var str = index+1+'.' + first + '-' + second
             return str
+        },
+        creatData(data){
+            var newData = []
+            data.forEach((item, index) => {
+                newData.push(new _creatGridData(item.coverImgUrl, item.playCount, item.updateFrequency, item.name, item.id, true,true,false))
+            })
+            return newData;
+        },
+        onClick(id){ //点击官方榜
+            console.log(id)
         }
     }
 }
@@ -80,16 +101,18 @@ export default {
             width 100%
             height 100%
             overflow hidden
-            background $themeColor
+            background-image url('../../assets/BgImage1.png')
+            background-size cover
             .rank-list-wrap
                 padding 0 8px
-                padding-top 12px
                 width 100%
                 background white
                 box-sizing border-box
                 .rank-type-name
+                    font-weight 600
+                    padding-top 12px
                     font-size 18px
-                    margin 0 0 8px 8px
+                    margin 0 8px 8px 8px 
                 .content-wrap
                     width 100%
                     .rank-item
@@ -134,13 +157,10 @@ export default {
                                 width 100%
                                 .songDetail
                                     width 100%
-                                    font-size 14px
+                                    font-size 13px
                                     line-height 28px
                                     color $fontGray
                                     white-space nowrap
                                     overflow hidden
                                     text-overflow ellipsis
-
-
-3
 </style>
