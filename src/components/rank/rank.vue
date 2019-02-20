@@ -12,7 +12,7 @@
                         @click="onClick(item.id)"
                         >
                             <div class="item-cover">
-                                <img :src="item.coverImgUrl" alt="" class="cover-img">
+                                <img v-lazy="item.coverImgUrl" alt="" class="cover-img">
                                 <div class="filter"></div>
                                 <div class="update-time">{{item.updateFrequency}}</div>
                             </div>

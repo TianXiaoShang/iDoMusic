@@ -1,6 +1,7 @@
 <template>
     <div class="singer-wrap">
         <category :categoryData="singerTypeData" @changeType="changeSingerType"></category>
+        <address-list :addressListData="singersData"></address-list>
     </div>
 </template>
 
@@ -10,6 +11,8 @@ import getSingerData from "api/singer"
 import {_singerTypeData} from "common/js/singerTypeData"
 import getFirstLetter from 'common/js/getFirstLetter'
 import { STATUS_TEXT } from "api/config"
+import addressList from "base/addressList"
+
 
 export default {
     name:'Singer',
@@ -22,7 +25,8 @@ export default {
         this._getSingerData()
     },
     components:{
-        category
+        category,
+        addressList
     },
     created(){
         this.singerTypeData = _singerTypeData
@@ -33,6 +37,7 @@ export default {
             getSingerData(id).then(res => {
                 if(res && res.statusText === STATUS_TEXT){
                     this.singersData = this.handleData(res.data.artists)
+                    console.log(this.singersData)
                 }
             })
         },
@@ -41,23 +46,36 @@ export default {
         },
         handleData(arr){                                                           //处理数据格式
             var newArr = []
+            var reg = /[A-z]/
+            var other = {
+                typeStr: '其他',
+                detailArr:[]
+            }
+          
             arr.forEach( (item) => {
-                item.firstStr = getFirstLetter(item.name.substr(0,1)).substr(0,1)  //提取并往数据中加入-歌手名的第一个字符的首写字母的大写形式
+                item.firstStr = getFirstLetter(item.name.substr(0,1)).substr(0,1).toLocaleUpperCase()  //提取并往数据中加入-歌手名的第一个字符的首写字母的大写形式(toLocaleUpperCase方法是针对英文名开头小写)
+                if(!reg.test(item.firstStr)){                                    //如果是非26个字母内的则单独处理并return
+                    other.detailArr.push(item)
+                    return
+                }
+                
                 for(var i = 0 ; i < newArr.length; i++){ 
-                    if(newArr[i].typeStr == item.firstStr){                        //查找是否有对应字母的对象，有则push数据，没有则创建后push数据；
-                        newArr[i].singerArr.push(item)
+                    if(newArr[i].typeStr == item.firstStr){                        //查找是否有对应字母的对象，有则push数据后return，没有则创建后push数据；
+                        newArr[i].detailArr.push(item)
                         return
                     }
                 }
                 newArr.push({
                     typeStr:item.firstStr,
-                    singerArr : []
+                    detailArr : []
                 })
-                newArr[newArr.length-1].singerArr.push(item)
+                newArr[newArr.length-1].detailArr.push(item)
             })
+
             newArr.sort(function(a ,b){                                           //通过字母进行排序
                 return a.typeStr.charCodeAt()-b.typeStr.charCodeAt()         
             })
+            other.detailArr.length ? newArr.push(other) : ''                      //如果other的数组中存在值，则放到数组末尾，否则不用放
             return newArr
         }
     }
