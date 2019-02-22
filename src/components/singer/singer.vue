@@ -1,7 +1,8 @@
 <template>
     <div class="singer-wrap">
         <category :categoryData="singerTypeData" @changeType="changeSingerType"></category>
-        <address-list :addressListData="singersData"></address-list>
+        <address-list :loadingStatus="loadingStatus" :addressListData="singersData"></address-list>
+        
     </div>
 </template>
 
@@ -18,7 +19,9 @@ export default {
     name:'Singer',
     data(){
         return {
-            singersData:[]
+            singersData:[],
+            loadingStatus:false,    //loading的显示状态
+            oldType:-1
         }
     },
     created(){
@@ -26,7 +29,7 @@ export default {
     },
     components:{
         category,
-        addressList
+        addressList,
     },
     created(){
         this.singerTypeData = _singerTypeData
@@ -34,15 +37,19 @@ export default {
     methods:{
         _getSingerData(e){
             var id = e.resourceType
+            this.loadingStatus = true
             getSingerData(id).then(res => {
                 if(res && res.statusText === STATUS_TEXT){
                     this.singersData = this.handleData(res.data.artists)
-                    console.log(this.singersData)
+                    this.loadingStatus = false
                 }
             })
         },
         changeSingerType(e){
-            this._getSingerData(e)
+            if(e.typeName != this.oldType){
+                this._getSingerData(e)
+                this.oldType = e.typeName;             //维护一个type，比较新旧type进行逻辑处理
+            }
         },
         handleData(arr){                                                           //处理数据格式
             var newArr = []

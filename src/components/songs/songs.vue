@@ -80,13 +80,8 @@ export default {
         },
         changeType(e){
             if(e.typeName != this.oldType){
-                if(e.typeName == undefined){           //默认获取全部歌单
-                    this.loadingStatus = true
-                    getSongsData().then(res => this._creatSongList(res))
-                }else{                             //获取对应type的歌单
-                    this.loadingStatus = true
-                    getSongsData(e.typeName).then(res => this._creatSongList(res))
-                }
+                this.loadingStatus = true
+                getSongsData(e.typeName).then(res => this._creatSongList(res))   //获取对应type的歌单
                 this.oldType = e.typeName;             //维护一个type，比较新旧type进行逻辑处理
             }
         },

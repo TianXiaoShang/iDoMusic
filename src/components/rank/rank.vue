@@ -111,7 +111,7 @@ export default {
                 .rank-type-name
                     font-weight 600
                     padding-top 12px
-                    font-size 18px
+                    font-size 16px
                     margin 0 8px 8px 8px 
                 .content-wrap
                     width 100%

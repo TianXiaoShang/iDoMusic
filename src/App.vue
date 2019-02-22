@@ -34,6 +34,10 @@ export default {
   *
     margin 0
     padding 0
-    // .router-content
-      // background green
+    #app
+      position fixed
+      top 0
+      bottom 0
+      width 100%
+      overflow hidden
 </style>

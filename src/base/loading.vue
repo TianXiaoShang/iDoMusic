@@ -21,7 +21,7 @@ export default {
         right 0
         bottom 0
         top 0
-        z-index 999
+        z-index 998
         background rgba(20,20,20,0.5)
         .imgWrap
             position absolute 

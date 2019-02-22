@@ -2,7 +2,7 @@
     <div class="myScrollWrap">
       <my-scroll :data="refreshData" class="scroll-wrap" ref='scroll'>
         <div class="scroll-content">
-            <Slider :params="bannerParams" :bannerData="bannerData">
+            <Slider :params="bannerParams" :bannerData="bannerData" v-show="bannerData.length">
                 <div v-for="(item,index) in bannerData" :key="index">
                     <a :href="item.url">
                         <img :src="item.imageUrl" @load="bannerImgLoad" alt="">
@@ -10,7 +10,7 @@
                 </div>
             </Slider>
             <song-list v-if="recSongListData.length" :songListData='recSongListData' :titleTypeName="titleTypeName"></song-list>
-            <rec-new-music v-if="songsListData.length" :songsListData="songsListData"></rec-new-music>
+            <music-list v-if="songsListData.length" :songsListData="songsListData"></music-list>
         </div>
       </my-scroll>
     </div>
@@ -25,7 +25,7 @@ import myScroll from "base/myScroll"
 import songList from 'base/songList'
 import getRecSongListData from 'api/recSongList'
 import {_creatGridData, _creatListData} from 'common/js/creatListData'
-import recNewMusic from 'components/recNewMusic/recNewMusic'
+import MusicList from 'base/MusicList'
 
 
 export default {
@@ -34,7 +34,7 @@ export default {
     Slider,
     myScroll,
     songList,
-    recNewMusic
+    MusicList
   },
   data() {
     return {

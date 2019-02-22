@@ -45,7 +45,7 @@ export default {
     computed:{
         myStyle(){                   //通过列数计算出每一个格子需要的width
             var obj = {}
-            obj.width =  this.column == 2 ? '48%' : '31.33%'
+            obj.width =  this.column == 2 ? '48%' : '31.32%'
             return obj
         }
     },
@@ -69,7 +69,7 @@ export default {
     margin-bottom 10px
     .song-type-name
         font-weight 600
-        font-size 18px
+        font-size 16px
         margin 16px 16px 6px 16px
     .list-content
         width 100%

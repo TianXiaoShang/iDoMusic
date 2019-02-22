@@ -1,9 +1,9 @@
 <template>
-    <div class="category-wrap">
+    <div class="category-wrap" ref="cateGoryWrap">
         <div class="category">
             <span 
             class="item"
-            :class="{active : item.fatherNum == currentFather}" 
+            :class="{active : item.fatherNum == fatherShow}" 
             v-for="(item, index) in categoryData.fathers" 
             :key="index" 
             data-myyIndex="111"
@@ -34,33 +34,55 @@ export default {
             currentFather:-1,
             currentName:null,
             typeShow:true,
+            fatherShow:-1
         }
     },
     mounted(){
         this.changeType()
+        document.addEventListener('touchstart',this.isClickOut)
     },
-   
+    // beforeDestroy() {
+    //     console.log('111')
+    //     document.removeEventListener("click", this.isClickOut);
+    // },
     methods:{
         changeFather(fatherIndex){
-            this.typeShow = fatherIndex == this.currentFather ? !this.typeShow : true
-            this.currentFather = fatherIndex                          //控制father样式及children隐藏/显示
-            if( fatherIndex == -1){
-                this.changeType()
+            this.typeShow = true
+            this.currentFather = fatherIndex      //控制children隐藏/显示
+            if( fatherIndex == -1){               //点击第一个重新请求并不传参数默认对应第一个数据，并且消除子项的样式
+                this.changeType()   
+                this.fatherShow = -1              //父级的样式，在           
+                this.currentName = null
             }
         },
         changeChild(childName,category, resourceType){
+            this.fatherShow = category            //父级的样式由当前子级的所属类型来控制
             this.currentName = childName
-            setTimeout(() => {                                       //为了给用户看到点击后的反应而延迟隐藏
+            setTimeout(() => {                    //为了给用户看到点击后的反应而延迟隐藏
                 this.typeShow = false
             },100)
             this.changeType(category,childName,resourceType)
         },
         changeType(category,typeName,resourceType){
             this.$emit("changeType",{
-                category,     //从属父级类型
-                typeName,     //当前标签名字
-                resourceType, //当前标签标识ID
+                category,      //从属父级类型
+                typeName,      //当前标签名字
+                resourceType,  //当前标签标识ID
             })
+        },
+        isClickOut(e){
+            console.log('898998')
+            try{
+                e.path.forEach(item => {
+                    if(item == this.$refs.cateGoryWrap){
+                        throw new Error('StopIteration')      //如果点击的是二级菜单区域则跳出循环
+                    }
+                })  
+            }catch(e){
+                if (e.message !== 'StopIteration')  throw e
+                return          
+            }
+            this.typeShow = false    //如果包含this.$refs.cateGoryWrap则在上方return,否则赋值false隐藏
         }
     }
 }
@@ -104,7 +126,7 @@ export default {
                 text-align center
                 font-size 14px
                 display block
-                width 33.33%
+                width 33.32%
                 padding 8px
                 color $fontGray
                 background $BgGray

@@ -1,5 +1,5 @@
 <template>
-    <div class="recNewMusic-warp">
+    <div class="MusicList-warp">
         <div class="content">
             <div class="title">iDo推荐热歌</div>
             <div class="item" v-for="(item,index) in songsListData" :key="index" @click="onClick(item.songId)">
@@ -20,7 +20,7 @@
 
 <script>
 export default {
-    name:'RecNewMusic',
+    name:'MusicList',
     props:{
         songsListData:Array
     },
@@ -42,7 +42,7 @@ export default {
 
 <style lang="stylus" scoped>
 @import "~common/styles/variable"
-    .recNewMusic-warp
+    .MusicList-warp
         border-top 1px solid #eee
         width 100%
         padding 5px 0px 0 0
@@ -54,7 +54,7 @@ export default {
                 font-size 18px
             .item
                 width 100%
-                height 70px
+                height 60px
                 display flex
                 align-items center
                 margin-bottom 10px
