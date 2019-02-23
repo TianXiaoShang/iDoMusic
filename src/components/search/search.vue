@@ -57,7 +57,7 @@
                     {{item}}
                     </div>
                 </div>
-                <router-view name="searchTypes"></router-view>
+                <router-view name="search"></router-view>
             </div>
         </div>
 
@@ -109,8 +109,7 @@ export default {
         changeType(e){                    //切换搜索type类型
             this.currentType = e
             this.$router.push({
-                name:'searchTypes',
-                params:{types:'1'}
+                name:'search',
             })
         },
         _getSearchData(keyWords){                //搜索数据

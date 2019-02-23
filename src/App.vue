@@ -2,13 +2,9 @@
   <div id='app'>
       <search></search>
       <tab></tab>
-      <div class="router-content">
       <keep-alive>
         <router-view></router-view>
       </keep-alive>
-      
-
-      </div>
   </div>
 </template>
 

@@ -33,10 +33,19 @@ export default new Router({
         {
             path:'/singer',
             component: Singer
+        },
+        {
+            path:'/search',
+            name:'search',
+            component:MusicList,
         },{
-            path:'/searchType/:types',
-            name:'searchTypes',
-            component:MusicList
+            path:'/search2',
+            name:'search2',
+            component:MusicList,
+        },{
+            path:'/search3',
+            name:'search3',
+            component:MusicList,
         }
     ]
 })
