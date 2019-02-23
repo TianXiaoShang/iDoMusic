@@ -40,6 +40,10 @@ export default {
         titleTypeName:{
             type:String,
             default:''
+        },
+        dataType:{
+            type:String,
+            default:'Mix'
         }
     },
     computed:{
@@ -54,7 +58,7 @@ export default {
             return num = num > 10000 ? parseInt(num/10000) + "万" : num
         },
         myClick(id){
-            console.log(id)
+            console.log(id,this.dataType)
         }
     }
 }

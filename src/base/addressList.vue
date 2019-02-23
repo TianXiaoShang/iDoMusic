@@ -107,7 +107,7 @@ export default {
     },
     methods:{
         onClick(id){
-            console.log('歌手id='+id)
+            console.log(id,'Singer')
         },
         onTouchStart(e){             //点击获取deta-index来scrollTo
             this.lock = false        //控制右侧时左侧的监听可以取消

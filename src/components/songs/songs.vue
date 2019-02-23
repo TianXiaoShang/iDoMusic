@@ -89,7 +89,7 @@ export default {
         creatData(data){
             var newData = []
             data.forEach((item, index) => {
-                newData.push(new _creatGridData(item.coverImgUrl, item.playCount, item.creator.nickname, item.name, item.id, true,true,true))
+                newData.push(new _creatGridData(item.coverImgUrl, item.playCount, item.creator.nickname, item.name, item.id, true,true,true,'mix'))
             })
             return newData;
         },

@@ -34,18 +34,25 @@ export default new Router({
             path:'/singer',
             component: Singer
         },
-        {
-            path:'/search',
-            name:'search',
-            component:MusicList,
-        },{
-            path:'/search2',
-            name:'search2',
-            component:MusicList,
-        },{
-            path:'/search3',
-            name:'search3',
-            component:MusicList,
-        }
+        // {
+        //     path:'/searchType',
+        //     components:{
+        //         search:MusicList
+        //     },
+        //     children:[
+        //         {
+        //             path:'/searchtypesSong',
+        //             component:MusicList
+        //         },
+        //         {
+        //             path:'/searchtypesSinger',
+        //             component:MusicList
+        //         },
+        //         {
+        //             path:'/searchtypesMix',
+        //             component:MusicList
+        //         },
+        //     ]
+        // }
     ]
 })

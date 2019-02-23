@@ -1,5 +1,5 @@
 export class _creatGridData {
-    constructor(url, count, title, name, id, showPlayCount, showTitle, showCreatorIcon) {
+    constructor(url, count, title, name, id, showPlayCount, showTitle, showCreatorIcon,type) {
         this.imageUrl = url;
         this.playCount = count;
         this.title = title;
@@ -8,19 +8,30 @@ export class _creatGridData {
         this.showPlayCount = showPlayCount;
         this.showTitle = showTitle;
         this.showCreatorIcon = showCreatorIcon;
+        this.type=type
     }
 }
 
 export class _creatListData {
-    constructor(url, name, singer, album, id) {
+    constructor(url, name, album, id, type) {
         this.imageUrl = url;
-        this.songName = name;
-        this.singerName = singer;
+        this.name = name;
         this.album = album;
-        this.songId = id;
+        this.id = id;
+        this.type = type
     }
 }
 
+export function filterSinger(singer,alboum){
+    var singerArr = []
+    singer.forEach((item) => {
+        singerArr.push(item.name)
+    })
+    var str = singerArr.join('/') + ' - ' + alboum
+    return str
+}
+
+export const DATA_TYPE = ["Song",'Singer','Mix']
 
 
 // export default function _creatGridData(data, url, count, title, name, id, showPlayCount = false, showCreatorIcon = false, showTitle = false) {

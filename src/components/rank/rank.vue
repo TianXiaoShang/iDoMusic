@@ -27,6 +27,7 @@
                 <song-list 
                 :songListData="rankDataMore" 
                 :titleTypeName="titleTypeName"
+                :dataType="dataType"
                 ></song-list>
             </div>
             <loading v-if="loadingStatus"></loading>
@@ -49,7 +50,8 @@ export default {
             rankDataDetail:[],
             rankDataMore:[],
             titleTypeName:"iDo全球榜",
-            loadingStatus:false
+            loadingStatus:false,
+            dataType:"Rank"
         }
     },
     components:{
@@ -79,12 +81,12 @@ export default {
         creatData(data){
             var newData = []
             data.forEach((item, index) => {
-                newData.push(new _creatGridData(item.coverImgUrl, item.playCount, item.updateFrequency, item.name, item.id, true,true,false))
+                newData.push(new _creatGridData(item.coverImgUrl, item.playCount, item.updateFrequency, item.name, item.id, true,true,false,'rank'))
             })
             return newData;
         },
         onClick(id){ //点击官方榜
-            console.log(id)
+            console.log(id,'Rank')
         }
     }
 }

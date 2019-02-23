@@ -1,5 +1,5 @@
 <template>
-    <div class="loadingWrap">
+    <div class="loadingWrap" ref="loadingWrap">
         <div class="imgWrap">
             <img class="loadingImg" src="@/assets/loading.png" alt="">
         </div>
@@ -10,7 +10,16 @@
 
 <script>
 export default {
-    name:"Loading"
+    name:"Loading",
+    props:{
+        myOpacity:{
+            type:String,
+            default:'0.5'
+        }
+    },
+    mounted(){
+        this.$refs.loadingWrap.style.background = `rgba(20,20,20,${this.myOpacity})`
+    }
 }
 </script>
 
@@ -21,8 +30,7 @@ export default {
         right 0
         bottom 0
         top 0
-        z-index 998
-        background rgba(20,20,20,0.5)
+        z-index 990
         .imgWrap
             position absolute 
             width 50px

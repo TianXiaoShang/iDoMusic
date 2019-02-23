@@ -14,10 +14,12 @@ export function getRecSearchData(keywords){
     return myAxios(url,params)
 }
 
-export function getSearchData(keywords){
+export function getSearchData(keywords,type=0){
+    var obj = [1,100,1000]
     var parmas = {
         keywords,
-        limit:30
+        limit:50,
+        type:obj[type]
     }
     var url = 'api/search/'
     return myAxios(url,parmas)

@@ -10,42 +10,108 @@
                 @input="myInput"
                 @focus="myFocus" type="text">
                 <img class="searchIcon"
-                @click="_getSearchData" 
+                @click="clickSearch" 
                 src="@/assets/search.png"/>
             </div>
         </div>
-        <div class="view-content" ref='viewContent'>
+        <div class="view-content" ref='viewContent' @touchstart="myStart">
             <img class="close" 
             src="@/assets/down.png" 
             @click="myClose"> 
-            <div class="hotRec-wrap">
-                <div class="hot-title">热搜榜</div>
-                <div class="hot-content">
-                    <span 
-                    @click="selectRecKeyword"
-                    class="hot-item" 
-                    v-for="(item,index) in hotSearchData"
-                    :key="index"
-                    >{{item.first}}</span>
-                </div>
-            </div>
-            <div class="search-history">
-                <div class="history-title">
-                    <div class="title-name">搜索历史</div>
-                    <img src="@/assets/clear.png" alt="" 
-                    class="clear-icon" 
-                    @click="myClearHistory">
-                </div>
-                <div class="history-content">
-                    <div class="history-item" @click='selectRecKeyword'>
-                        <div class="item-name">陷阱</div>
-                        <img class="delete-icon" 
-                        src='@/assets/delete.png' 
-                        @click.stop.prevent="myDeleteHistory">
+            <my-scroll class="myScrollOne">
+                <div>
+                    <div class="hotRec-wrap" v-if="hotSearchData.length">
+                        <div class="hot-title">热搜榜</div>
+                        <div class="hot-content">
+                            <span 
+                            @click="selectRecKeyword"
+                            class="hot-item" 
+                            v-for="(item,index) in hotSearchData"
+                            :key="index"
+                            >{{item.first}}</span>
+                        </div>
+                    </div>
+                    <div class="search-history">
+                        <div class="history-title">
+                            <div class="title-name">搜索历史</div>
+                            <img src="@/assets/clear.png" alt="" 
+                            class="clear-icon" 
+                            @click="myClearHistory">
+                        </div>
+                        <div class="history-content">
+                            <div class="history-item" @click='selectRecKeyword'>
+                                <div class="item-name">陷阱</div>
+                                <img class="delete-icon" 
+                                src='@/assets/delete.png' 
+                                @click.stop.prevent="myDeleteHistory">
+                            </div>
+                            <div class="history-item" @click='selectRecKeyword'>
+                                <div class="item-name">陷阱</div>
+                                <img class="delete-icon" 
+                                src='@/assets/delete.png' 
+                                @click.stop.prevent="myDeleteHistory">
+                            </div><div class="history-item" @click='selectRecKeyword'>
+                                <div class="item-name">陷阱</div>
+                                <img class="delete-icon" 
+                                src='@/assets/delete.png' 
+                                @click.stop.prevent="myDeleteHistory">
+                            </div><div class="history-item" @click='selectRecKeyword'>
+                                <div class="item-name">陷阱</div>
+                                <img class="delete-icon" 
+                                src='@/assets/delete.png' 
+                                @click.stop.prevent="myDeleteHistory">
+                            </div><div class="history-item" @click='selectRecKeyword'>
+                                <div class="item-name">陷阱</div>
+                                <img class="delete-icon" 
+                                src='@/assets/delete.png' 
+                                @click.stop.prevent="myDeleteHistory">
+                            </div><div class="history-item" @click='selectRecKeyword'>
+                                <div class="item-name">陷阱</div>
+                                <img class="delete-icon" 
+                                src='@/assets/delete.png' 
+                                @click.stop.prevent="myDeleteHistory">
+                            </div><div class="history-item" @click='selectRecKeyword'>
+                                <div class="item-name">陷阱</div>
+                                <img class="delete-icon" 
+                                src='@/assets/delete.png' 
+                                @click.stop.prevent="myDeleteHistory">
+                            </div><div class="history-item" @click='selectRecKeyword'>
+                                <div class="item-name">陷阱</div>
+                                <img class="delete-icon" 
+                                src='@/assets/delete.png' 
+                                @click.stop.prevent="myDeleteHistory">
+                            </div><div class="history-item" @click='selectRecKeyword'>
+                                <div class="item-name">陷阱</div>
+                                <img class="delete-icon" 
+                                src='@/assets/delete.png' 
+                                @click.stop.prevent="myDeleteHistory">
+                            </div><div class="history-item" @click='selectRecKeyword'>
+                                <div class="item-name">陷阱</div>
+                                <img class="delete-icon" 
+                                src='@/assets/delete.png' 
+                                @click.stop.prevent="myDeleteHistory">
+                            </div><div class="history-item" @click='selectRecKeyword'>
+                                <div class="item-name">陷阱</div>
+                                <img class="delete-icon" 
+                                src='@/assets/delete.png' 
+                                @click.stop.prevent="myDeleteHistory">
+                            </div><div class="history-item" @click='selectRecKeyword'>
+                                <div class="item-name">陷阱</div>
+                                <img class="delete-icon" 
+                                src='@/assets/delete.png' 
+                                @click.stop.prevent="myDeleteHistory">
+                            </div><div class="history-item" @click='selectRecKeyword'>
+                                <div class="item-name">陷阱</div>
+                                <img class="delete-icon" 
+                                src='@/assets/delete.png' 
+                                @click.stop.prevent="myDeleteHistory">
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="search-list-wrap" ref="listWrap">
+            </my-scroll>
+                    
+            <div class="search-list-wrap" ref="listWrap" v-if="listStatus">
                 <div class="type-wrap">
                     <div 
                     class="type-name" 
@@ -57,11 +123,17 @@
                     {{item}}
                     </div>
                 </div>
-                <router-view name="search"></router-view>
+                <my-scroll class="myScroll">
+                    <music-list :nomore="noMore" :songsListData="searchListData"></music-list>
+                    <loading :myOpacity="myOpacity" v-show="loadingStatus"></loading>
+                </my-scroll>
+
+
+                <!-- <router-view name="search"></router-view> -->
             </div>
         </div>
 
-        <div class="recSearch-wrap" v-show='value.length && recSearchData && recSearchData.length'>
+        <div class="recSearch-wrap" v-show='recShow && value.length && recSearchData && recSearchData.length'>
             <div class="rec-item" 
             @click="selectRecKeyword"
             v-for="(item,index) in recSearchData" 
@@ -69,73 +141,167 @@
             {{item.keyword}}
             </div>
         </div>
-
     </div>
 </template>
 
 <script>
 import {getHotRecSearchData,getRecSearchData,getSearchData} from 'api/search'
 import {STATUS_TEXT} from 'api/config'
+import {_creatListData, filterSinger, DATA_TYPE} from 'common/js/creatListData'
+import musicList from "base/MusicList"
+import myScroll from "base/myScroll"
+import loading from "base/loading"
 
 export default {
     name: "Search",
     data(){
         return {
+            listStatus:true,   //控制list及其中组件的销毁
+            myOpacity:'0',
             hotSearchData:[],
             recSearchData:[],
             searchListData:[],
-            value:'',
-            myTimer:null,
+            value:'', 
+            myTimer:null,      //用于防抖
             titleTypes:['歌 曲','歌 手','歌 单'],
-            currentType:0
+            currentType:0,     //当前搜索类型
+            searchTypes : ['Song','Singer','Mix'],
+            allListData:[],
+            loadingStatus:false,
+            noMore:false,    //没有资源
+            recShow:true,    //控制推荐搜索框的条件之一，主要用于在点击搜索后隐藏
+            filterData:[this.creatSongData,this.creatSingerData,this.creatMixData],
         }
     },
+    watch:{
+        value(){
+            this.value ? '' : this.recSearchData=[]
+        }
+    },
+    components:{
+        musicList,
+        myScroll,
+        loading
+    },
     methods:{
-        myFocus(e){                      //input聚焦
+        myFocus(e){                      //input聚焦上弹窗口
             this.$refs.viewContent.style.top = '55px'
         },
         myInput(e){                      //防抖监听input 
             clearTimeout(this.myTimer)
             this.myTimer = setTimeout(() => {
                 this._getRecSearchData()
+                this.recShow = true      //在输入的时候解锁，使得推荐搜索显示
             },500)
         },
-        selectRecKeyword(e){             //点击搜索推荐
-            this.value = ''
-            var keyWords = e.target.innerText
-            this._getSearchData(keyWords)    
-            this.$refs.listWrap.style.top = 30 + 'px'
+        myClose(){                         //关闭弹窗，downOut
+            this.$refs.viewContent.style.top = this.ClientHeight +'px'
+            this.$refs.listWrap.style.top = '100%'
+            setTimeout(()=>{
+                this.listStatus = false
+            },500)
+            this.value = ''                //清空value
+            this.currentType = 0           //将type归零
+            // this.$router.push({path:'/recommend'})
         },
-        changeType(e){                    //切换搜索type类型
-            this.currentType = e
-            this.$router.push({
-                name:'search',
+        selectRecKeyword(e){               //点击搜索推荐
+            var str = e.target.innerText
+            this.currentType = 0
+            this.searchListData = []
+            this.allListData = []
+            this.value = str
+            this.recShow = false           //搜索时可以关闭推荐搜索
+            this._getSearchData()    
+            this.listStatus = true      //渲染list及组件并延迟执行style否则报错
+            setTimeout(() =>{
+                this.$refs.listWrap.style.top = 30 + 'px'
+            },20)
+        },
+        changeType(e){                     //切换搜索type类型
+            this.currentType = e           //控制tab样式
+            this.searchListData = []       //每次切换清空当前数组
+            this.loadingStatus = false
+            if(this.allListData[e] && this.allListData[e].length){    //如果有值则取之前请求过的数据，否则发送请求
+                this.searchListData = this.allListData[e]
+                return 
+            }  
+            this._getSearchData()
+
+            // this.$router.push({
+            //     params:{type:this.searchTypes[e]},
+            //     path:'/searchtypes' + this.searchTypes[e],
+            // })
+        },
+        clickSearch(){                     //点击搜索图标
+            this.currentType = 0
+            this.$refs.viewContent.style.top = '55px'
+            if(this.value){
+                this.listStatus = true      //渲染list及组件并延迟执行style否则报错
+                setTimeout(() =>{
+                    this.$refs.listWrap.style.top = 30 + 'px'
+                },20)
+            }
+            this.recShow = false           //搜索时可以关闭推荐搜索
+            this.allListData = []
+            this.searchListData = []
+            this._getSearchData()
+        },
+        _getSearchData(){                  //搜索数据
+            this.noMore = false
+            this.loadingStatus = true
+            var type = this.currentType   //保存type，防止在请求过程中被更改，倒是数据格式创建错误
+            console.log(type)
+                this.value && getSearchData(this.value,type).then(res=> {
+                    if(res.statusText === STATUS_TEXT){
+                        this.loadingStatus = false
+                        if(res.data.result.songCount == 0 ){
+                            this.noMore = true
+                            return
+                        }
+                        this.allListData[type] =  this.filterData[type](res)    //用对应的函数处理对应类型的数据格式
+                        this.searchListData = this.allListData[type]
+                    }
+                })
+        },
+        creatSongData(data){              //创建song数据格式
+            data = data.data.result.songs
+            var newData = [] 
+            data.forEach((item, index) => {
+                var album = filterSinger(item.artists,item.album.name)
+                newData.push(new _creatListData(undefined,  item.name, album, item.id ,DATA_TYPE[0]))
             })
+            return newData;
         },
-        _getSearchData(keyWords){                //搜索数据
-            keyWords = typeof keyWords == 'string' ? keyWords : this.value   //判断点击是点击搜索还是点击名字
-            keyWords && getSearchData(keyWords).then(res=> {
-                console.log(res)
-                if(res.statusText === STATUS_TEXT){
-                    this.searchListData = res.data.result.songs
-                }
+        creatSingerData(data){
+            data = data.data.result.artists
+            var newData = [] 
+            data.forEach((item, index) => {
+                newData.push(new _creatListData(item.img1v1Url,  item.name,undefined, item.id ,DATA_TYPE[1]))
             })
+            return newData;
         },
-        _getRecSearchData(){             //获取搜索推荐数据
+        creatMixData(data){
+            data = data.data.result.playlists
+            var newData = [] 
+            data.forEach((item, index) => {
+                var arr = [item.creator.nickname]
+                var album = 'by:' + item.creator.nickname + ' - ' + item.playCount + '次播放'
+                newData.push(new _creatListData(item.coverImgUrl, item.name, album, item.id ,DATA_TYPE[2]))
+            })
+            return newData;
+        },
+
+
+        _getRecSearchData(){               //获取搜索推荐数据
                 //有值的时候才发送请求
                 this.value &&  getRecSearchData(this.value).then(res=> {
-                    console.log(res)
                     if(res.statusText === STATUS_TEXT){
                         this.recSearchData = res.data.result.allMatch
                     }
                 })
-        
         },
-        
-        myClose(){                       //关闭弹窗，downOut
-            this.$refs.viewContent.style.top = this.ClientHeight +'px'
-            this.$refs.listWrap.style.top = '100%'
-        },
+
+
         myDeleteHistory(){               //删除某条搜索历史
             console.log('DeleteHistory')
         },
@@ -153,6 +319,9 @@ export default {
             this.ClientHeight = document.documentElement.clientHeight
             this.$refs.viewContent.style.top = this.ClientHeight + 'px'
             this.$refs.viewContent.style.height = this.ClientHeight - 55 + 'px'
+        },
+        myStart(){
+            this.recShow = false   
         }
     },
     created(){
@@ -205,7 +374,7 @@ export default {
         .view-content
             position absolute
             width 100%
-            z-index 999
+            z-index 998
             background rgba(250,250,250,1)
             border-radius 15px 15px 0 0
             transition top 0.4s
@@ -214,60 +383,66 @@ export default {
                 right 15px
                 top 5px
                 width 23px
-            .hotRec-wrap
+            .myScrollOne
                 width 100%
-                margin-top 30px
-                .hot-title
-                    height 30px
-                    line-height 30px
-                    font-weight 600
-                    margin  0 20px
-                    color $themeColor
-                    font-size 18px
-                    border-bottom 1px solid $themeColor
-                .hot-content
-                    box-sizing border-box
+                position absolute
+                top 30px
+                bottom 0
+                overflow hidden
+                .hotRec-wrap
                     width 100%
-                    padding 6px 20px
-                    &:after
-                        content ''
-                        display block
-                        clear both
-                    .hot-item
-                        font-size 15px
-                        float left
-                        padding 4px 10px
-                        margin 5px
-                        border-radius 15px
-                        background #eee
-            .search-history
-                width 100%
-                margin-top 20px
-                .history-title
-                    display flex
-                    justify-content space-between
-                    align-items center
-                    height 30px
-                    margin 5px 20px
-                    border-bottom 1px solid $themeColor
-                    .title-name
+                    .hot-title
+                        height 30px
+                        line-height 30px
                         font-weight 600
+                        margin  0 20px
                         color $themeColor
                         font-size 18px
-                    .clear-icon
-                        width 25px
-                .history-content
+                        border-bottom 1px solid $themeColor
+                    .hot-content
+                        box-sizing border-box
+                        width 100%
+                        padding 6px 20px
+                        &:after
+                            content ''
+                            display block
+                            clear both
+                        .hot-item
+                            font-size 15px
+                            float left
+                            padding 4px 10px
+                            margin 5px
+                            border-radius 15px
+                            background #eee
+                .search-history
                     width 100%
-                    height 100px
-                    .history-item
+                    margin-top 30px
+                    .history-title
                         display flex
-                        align-items center
                         justify-content space-between
-                        margin 8px 20px
-                        .item-name
-                            font-size 16px
-                        .delete-icon
-                            width 20px
+                        align-items center
+                        height 30px
+                        margin 5px 20px
+                        border-bottom 1px solid $themeColor
+                        .title-name
+                            font-weight 600
+                            color $themeColor
+                            font-size 18px
+                        .clear-icon
+                            width 25px
+                    .history-content
+                        width 100%
+                        .history-item
+                            display flex
+                            align-items center
+                            justify-content space-between
+                            margin 4px 20px
+                            border-bottom 1px solid #eee
+                            .item-name
+                                font-size 16px
+                                padding 4px 0
+                            .delete-icon
+                                width 20px
             .search-list-wrap
                 position absolute
                 top 100%
@@ -276,8 +451,18 @@ export default {
                 width 100%
                 background white
                 transition top 0.4s
-                .type-wrap
+                .myScroll
+                    position absolute 
+                    top 35px
+                    bottom 0
                     width 100%
+                    overflow hidden
+                    // background-image url('../../assets/BgImage1.png')
+                    // background-size cover
+                .type-wrap
+                    box-sizing border-box
+                    width 100%
+                    height 35px
                     padding 3px 5px 5px 5px
                     display flex
                     justify-content space-around
@@ -289,6 +474,7 @@ export default {
                         &.active
                             color $themeColor
                             border-bottom 1.5px solid $themeColor
+            
 
 
 

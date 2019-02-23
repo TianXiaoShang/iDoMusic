@@ -1,13 +1,14 @@
 <template>
     <div class="MusicList-warp">
+        <div class="noMore" v-if="nomore">没有为您找到相关资源~</div>
         <div class="content">
-            <div class="title">iDo推荐热歌</div>
-            <div class="item" v-for="(item,index) in songsListData" :key="index" @click="onClick(item.songId)">
-                <img :src="item.imageUrl" alt="" class="cover-img">
+            <div class="title">{{MusicListTitle}}</div>
+            <div class="item" v-for="(item,index) in songsListData" :key="index" @click="onClick(item.id,item.type)">
+                <img v-if="item.imageUrl" v-lazy="item.imageUrl" alt="" class="cover-img">
                 <div class="info">
                     <div class="song-info">
-                        <div class="song-name">{{item.songName}}</div>
-                        <div class="singer-list">{{filterSinger(item.album,item.singerName)}}</div>
+                        <div class="song-name">{{item.name}}</div>
+                        <div v-if="item.album" class="singer-list">{{item.album}}</div>
                     </div>
                     <div class="play">
                         <img src="@/assets/listPlayIcon.png" alt="" class="play-img">
@@ -22,21 +23,20 @@
 export default {
     name:'MusicList',
     props:{
-        songsListData:Array
+        songsListData:{
+            type:Array
+        },
+        MusicListTitle:{
+            type:String,
+            default:''
+        },
+        nomore:false
     },
     methods:{
-        onClick(id){
-            console.log(id)
+        onClick(id,type){
+            console.log(id,type)
         },
-        filterSinger(alboum,singer){
-            var singerArr = []
-            singer.forEach((item) => {
-                singerArr.push(item.name)
-            })
-            var str = singerArr.join('/') + ' - ' + alboum
-            return str
-        }
-    }
+    },
 }
 </script>
 
@@ -45,7 +45,13 @@ export default {
     .MusicList-warp
         border-top 1px solid #eee
         width 100%
-        padding 5px 0px 0 0
+        padding 5px 0px 5px 5px
+        background white
+        .noMore
+            text-align center
+            padding 10px 0
+            color #bbb
+            font-size 15px
         .content
             width 100%
             .title

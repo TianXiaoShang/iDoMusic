@@ -10,7 +10,7 @@
                 </div>
             </Slider>
             <song-list v-if="recSongListData.length" :songListData='recSongListData' :titleTypeName="titleTypeName"></song-list>
-            <music-list v-if="songsListData.length" :songsListData="songsListData"></music-list>
+            <music-list v-if="songsListData.length" :MusicListTitle="MusicListTitle" :songsListData="songsListData"></music-list>
         </div>
       </my-scroll>
     </div>
@@ -24,7 +24,7 @@ import Slider from "base/slider"
 import myScroll from "base/myScroll"
 import songList from 'base/songList'
 import getRecSongListData from 'api/recSongList'
-import {_creatGridData, _creatListData} from 'common/js/creatListData'
+import {_creatGridData, _creatListData, filterSinger, DATA_TYPE} from 'common/js/creatListData'
 import MusicList from 'base/MusicList'
 
 
@@ -47,7 +47,8 @@ export default {
       recSongListData:[],
       titleTypeName:"iDo推荐歌单",
       songsListData:[],
-      refreshData:[]
+      refreshData:[],
+      MusicListTitle:'iDo推荐热歌',
     };
   },
   watch:{                    //监听任意数据获取到随后refresh刷新高度
@@ -94,14 +95,15 @@ export default {
     creatGridData(data){                //创建数据格式
       var newData = []
       data.forEach((item, index) => {
-          newData.push(new _creatGridData(item.picUrl, item.playCount, undefined, item.name, item.id, true,false,false))
+          newData.push(new _creatGridData(item.picUrl, item.playCount, undefined, item.name, item.id, true,false,false,DATA_TYPE[2]))
       })
       return newData;
     },
     creatListData(data){                //创建数据格式
-      var newData = []
+      var newData = [] 
       data.forEach((item, index) => {
-          newData.push(new _creatListData(item.song.album.picUrl,  item.song.name,item.song.artists,item.song.album.name, item.id))
+          var album = filterSinger(item.song.artists,item.song.album.name)
+          newData.push(new _creatListData(item.song.album.picUrl,  item.song.name, album, item.id ,DATA_TYPE[0]))
       })
       return newData;
     },
