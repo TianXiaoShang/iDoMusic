@@ -438,12 +438,6 @@ export default {
                         &.active
                             color $themeColor
                             border-bottom 1.5px solid $themeColor
-            
-
-
-
-
-
         .recSearch-wrap
             position absolute 
             box-sizing border-box
