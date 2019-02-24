@@ -1,3 +1,5 @@
+//首先自我检讨，应该把弹窗做成组件，给自己一耳光！主要因为样式结构是现想现做，没有提前构架思考！！
+
 <template>
     <div class="search-Wrap">
         <div class="input-wrap">
@@ -14,11 +16,11 @@
                 src="@/assets/search.png"/>
             </div>
         </div>
-        <div class="view-content" ref='viewContent' @touchstart="myStart">
+        <div class="view-content" ref='viewContent' @touchstart="myStart" v-show="viewShow">
             <img class="close" 
             src="@/assets/down.png" 
             @click="myClose"> 
-            <my-scroll class="myScrollOne">
+            <my-scroll class="navigationScroll" ref="navigationScroll">
                 <div>
                     <div class="hotRec-wrap" v-if="hotSearchData.length">
                         <div class="hot-title">热搜榜</div>
@@ -38,75 +40,17 @@
                             class="clear-icon" 
                             @click="myClearHistory">
                         </div>
-                        <div class="history-content">
+                        <div class="history-content" 
+                        v-for="(item, index) in searchHistoryData" 
+                        :key="index">
                             <div class="history-item" @click='selectRecKeyword'>
-                                <div class="item-name">陷阱</div>
+                                <div class="item-name">{{item}}</div>
                                 <img class="delete-icon" 
                                 src='@/assets/delete.png' 
-                                @click.stop.prevent="myDeleteHistory">
-                            </div>
-                            <div class="history-item" @click='selectRecKeyword'>
-                                <div class="item-name">陷阱</div>
-                                <img class="delete-icon" 
-                                src='@/assets/delete.png' 
-                                @click.stop.prevent="myDeleteHistory">
-                            </div><div class="history-item" @click='selectRecKeyword'>
-                                <div class="item-name">陷阱</div>
-                                <img class="delete-icon" 
-                                src='@/assets/delete.png' 
-                                @click.stop.prevent="myDeleteHistory">
-                            </div><div class="history-item" @click='selectRecKeyword'>
-                                <div class="item-name">陷阱</div>
-                                <img class="delete-icon" 
-                                src='@/assets/delete.png' 
-                                @click.stop.prevent="myDeleteHistory">
-                            </div><div class="history-item" @click='selectRecKeyword'>
-                                <div class="item-name">陷阱</div>
-                                <img class="delete-icon" 
-                                src='@/assets/delete.png' 
-                                @click.stop.prevent="myDeleteHistory">
-                            </div><div class="history-item" @click='selectRecKeyword'>
-                                <div class="item-name">陷阱</div>
-                                <img class="delete-icon" 
-                                src='@/assets/delete.png' 
-                                @click.stop.prevent="myDeleteHistory">
-                            </div><div class="history-item" @click='selectRecKeyword'>
-                                <div class="item-name">陷阱</div>
-                                <img class="delete-icon" 
-                                src='@/assets/delete.png' 
-                                @click.stop.prevent="myDeleteHistory">
-                            </div><div class="history-item" @click='selectRecKeyword'>
-                                <div class="item-name">陷阱</div>
-                                <img class="delete-icon" 
-                                src='@/assets/delete.png' 
-                                @click.stop.prevent="myDeleteHistory">
-                            </div><div class="history-item" @click='selectRecKeyword'>
-                                <div class="item-name">陷阱</div>
-                                <img class="delete-icon" 
-                                src='@/assets/delete.png' 
-                                @click.stop.prevent="myDeleteHistory">
-                            </div><div class="history-item" @click='selectRecKeyword'>
-                                <div class="item-name">陷阱</div>
-                                <img class="delete-icon" 
-                                src='@/assets/delete.png' 
-                                @click.stop.prevent="myDeleteHistory">
-                            </div><div class="history-item" @click='selectRecKeyword'>
-                                <div class="item-name">陷阱</div>
-                                <img class="delete-icon" 
-                                src='@/assets/delete.png' 
-                                @click.stop.prevent="myDeleteHistory">
-                            </div><div class="history-item" @click='selectRecKeyword'>
-                                <div class="item-name">陷阱</div>
-                                <img class="delete-icon" 
-                                src='@/assets/delete.png' 
-                                @click.stop.prevent="myDeleteHistory">
-                            </div><div class="history-item" @click='selectRecKeyword'>
-                                <div class="item-name">陷阱</div>
-                                <img class="delete-icon" 
-                                src='@/assets/delete.png' 
-                                @click.stop.prevent="myDeleteHistory">
+                                @click.stop.prevent="myDeleteHistory(index)">
                             </div>
                         </div>
+                        <div class="noMore" v-if="!searchHistoryData.length">暂无搜索历史，快跟iDo浪起来~</div>
                     </div>
                 </div>
             </my-scroll>
@@ -123,7 +67,7 @@
                     {{item}}
                     </div>
                 </div>
-                <my-scroll class="myScroll">
+                <my-scroll class="myScroll" :data="searchListData" ref="listScroll">
                     <music-list :nomore="noMore" :songsListData="searchListData"></music-list>
                     <loading :myOpacity="myOpacity" v-show="loadingStatus"></loading>
                 </my-scroll>
@@ -148,6 +92,7 @@
 import {getHotRecSearchData,getRecSearchData,getSearchData} from 'api/search'
 import {STATUS_TEXT} from 'api/config'
 import {_creatListData, filterSinger, DATA_TYPE} from 'common/js/creatListData'
+import {getSearchHistory, setSearchHistory, deleteSearchHistory, clearSearchHistory} from 'common/js/cache'
 import musicList from "base/MusicList"
 import myScroll from "base/myScroll"
 import loading from "base/loading"
@@ -157,10 +102,12 @@ export default {
     data(){
         return {
             listStatus:true,   //控制list及其中组件的销毁
+            viewShow:false,
             myOpacity:'0',
             hotSearchData:[],
             recSearchData:[],
             searchListData:[],
+            searchHistoryData:[],
             value:'', 
             myTimer:null,      //用于防抖
             titleTypes:['歌 曲','歌 手','歌 单'],
@@ -168,6 +115,7 @@ export default {
             searchTypes : ['Song','Singer','Mix'],
             allListData:[],
             loadingStatus:false,
+            // keyWords:'',
             noMore:false,    //没有资源
             recShow:true,    //控制推荐搜索框的条件之一，主要用于在点击搜索后隐藏
             filterData:[this.creatSongData,this.creatSingerData,this.creatMixData],
@@ -175,7 +123,7 @@ export default {
     },
     watch:{
         value(){
-            this.value ? '' : this.recSearchData=[]
+            this.value ? '' : this.recSearchData=[]   //value发生变化则清空推荐搜索数据
         }
     },
     components:{
@@ -185,7 +133,12 @@ export default {
     },
     methods:{
         myFocus(e){                      //input聚焦上弹窗口
-            this.$refs.viewContent.style.top = '55px'
+            this.viewShow = true
+            setTimeout(() => {
+                this.$refs.viewContent.style.top = '55px'
+            },20)  //异步给时间渲染dom否则监听不到top，也就是改变top时display还是none到block的转化过程
+            this.$refs.navigationScroll.scrollTo(0,0,300)
+            this.listStatus = true
         },
         myInput(e){                      //防抖监听input 
             clearTimeout(this.myTimer)
@@ -193,12 +146,14 @@ export default {
                 this._getRecSearchData()
                 this.recShow = true      //在输入的时候解锁，使得推荐搜索显示
             },500)
+            // this.keyWords = this.value
         },
         myClose(){                         //关闭弹窗，downOut
             this.$refs.viewContent.style.top = this.ClientHeight +'px'
             this.$refs.listWrap.style.top = '100%'
             setTimeout(()=>{
                 this.listStatus = false
+                this.viewShow = false
             },500)
             this.value = ''                //清空value
             this.currentType = 0           //将type归零
@@ -218,6 +173,7 @@ export default {
             },20)
         },
         changeType(e){                     //切换搜索type类型
+            this.$refs.listScroll.scrollTo(0,0,300)
             this.currentType = e           //控制tab样式
             this.searchListData = []       //每次切换清空当前数组
             this.loadingStatus = false
@@ -234,9 +190,9 @@ export default {
         },
         clickSearch(){                     //点击搜索图标
             this.currentType = 0
+            this.listStatus = true      //渲染list及组件并延迟执行style否则报错
             this.$refs.viewContent.style.top = '55px'
             if(this.value){
-                this.listStatus = true      //渲染list及组件并延迟执行style否则报错
                 setTimeout(() =>{
                     this.$refs.listWrap.style.top = 30 + 'px'
                 },20)
@@ -249,20 +205,22 @@ export default {
         _getSearchData(){                  //搜索数据
             this.noMore = false
             this.loadingStatus = true
+            var searchKeyWord = this.value    //保存用于在数据请求后存入缓存
             var type = this.currentType   //保存type，防止在请求过程中被更改，倒是数据格式创建错误
-            console.log(type)
-                this.value && getSearchData(this.value,type).then(res=> {
-                    if(res.statusText === STATUS_TEXT){
-                        this.loadingStatus = false
-                        if(res.data.result.songCount == 0 ){
-                            this.noMore = true
-                            return
-                        }
-                        this.allListData[type] =  this.filterData[type](res)    //用对应的函数处理对应类型的数据格式
-                        this.searchListData = this.allListData[type]
+            this.value && getSearchData(this.value,type).then(res=> {
+                this.searchHistoryData = setSearchHistory(searchKeyWord)    //不管搜索成功与否都保存记录，因为关键词搜索歌曲没有可能有歌单，歌手
+                if(res.statusText === STATUS_TEXT){
+                    this.loadingStatus = false
+                    if(res.data.result.songCount == 0 ){
+                        this.noMore = true        //如果数量为0说明没有数据，提示用户
+                        return
                     }
-                })
+                    this.allListData[type] =  this.filterData[type](res)    //用对应的函数处理对应类型的数据格式
+                    this.searchListData = this.allListData[type]
+                }
+            })
         },
+        
         creatSongData(data){              //创建song数据格式
             data = data.data.result.songs
             var newData = [] 
@@ -300,12 +258,12 @@ export default {
                     }
                 })
         },
-
-
-        myDeleteHistory(){               //删除某条搜索历史
+        myDeleteHistory(e){               //删除某条搜索历史
+            this.searchHistoryData = deleteSearchHistory(e)
             console.log('DeleteHistory')
         },
         myClearHistory(index){           //清除全部搜索历史
+            this.searchHistoryData = clearSearchHistory()
             console.log('ClearHistory')
         },
         _getRecSearch(){                 //获取热搜数据
@@ -325,7 +283,8 @@ export default {
         }
     },
     created(){
-        this._getRecSearch() 
+        this._getRecSearch(),
+        this.searchHistoryData = getSearchHistory()
     },
     mounted(){
         this._initHeight()
@@ -383,7 +342,7 @@ export default {
                 right 15px
                 top 5px
                 width 23px
-            .myScrollOne
+            .navigationScroll
                 width 100%
                 position absolute
                 top 30px
@@ -443,6 +402,11 @@ export default {
                                 padding 4px 0
                             .delete-icon
                                 width 20px
+                    .noMore
+                        text-align center
+                        padding 10px 0
+                        color #bbb
+                        font-size 15px
             .search-list-wrap
                 position absolute
                 top 100%
@@ -507,7 +471,4 @@ export default {
                 height 18px
                 background url('../../assets/search.png')
                 background-size cover
-                
-
-                
 </style>

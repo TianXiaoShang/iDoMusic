@@ -4,7 +4,10 @@
         <div class="content">
             <div class="title">{{MusicListTitle}}</div>
             <div class="item" v-for="(item,index) in songsListData" :key="index" @click="onClick(item.id,item.type)">
-                <img v-if="item.imageUrl" v-lazy="item.imageUrl" alt="" class="cover-img">
+                <div v-if="item.imageUrl" class="cover-img">
+                    <img v-lazy="item.imageUrl" :key="item.imageUrl" alt="" class="item-img">
+                </div>
+                
                 <div class="info">
                     <div class="song-info">
                         <div class="song-name">{{item.name}}</div>
@@ -69,7 +72,13 @@ export default {
                 border-bottom 1px solid #eee
                 .cover-img
                     margin-left 10px
-                    height 100%
+                    flex-shrink 0
+                    width 60px
+                    height 60px
+                    overflow hidden
+                    .item-img
+                        height 100%
+                        width 100%
                 .info
                     box-sizing border-box
                     display flex
