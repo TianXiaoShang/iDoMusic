@@ -1,8 +1,7 @@
 <template>
     <div class="singer-wrap">
-        <category :categoryData="singerTypeData" @changeType="changeSingerType"></category>
-        <address-list :loadingStatus="loadingStatus" :addressListData="singersData"></address-list>
-        
+        <category :categoryData="singerTypeData"  @changeType="changeSingerType"></category>
+        <address-list :loadingStatus="loadingStatus" @selectTarget="selectSinger" :addressListData="singersData"></address-list>
     </div>
 </template>
 
@@ -50,6 +49,15 @@ export default {
                 this._getSingerData(e)
                 this.oldType = e.typeName;             //维护一个type，比较新旧type进行逻辑处理
             }
+        },
+        selectSinger(ops){
+            this.$router.push({
+                name:'songListPage',
+                params:{
+                    id:ops.id,
+                    type:ops.type
+                }
+            })
         },
         handleData(arr){                                                           //处理数据格式
             var newArr = []

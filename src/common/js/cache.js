@@ -21,7 +21,6 @@ export function deleteSearchHistory (index) {     //删除某条数据，并返�
     var arr = getSearchHistory()
     cutOutHistory(arr,index)
     storage.set(SEARCH_KEY, arr)
-    console.log(arr)
     return arr
 }
 
@@ -34,7 +33,6 @@ export function clearSearchHistory (){            //清除后返回一个空数�
 
 function cutOutHistory(arr,index){            //传入arr跟val及匹配index规则，删除对应val
     index > -1 ? arr.splice(index, 1) : ''
-    console.log(arr)
 }
 
 function insetHistory(arr, val , compare, lenMax){    //整个插入逻辑,（插入的）

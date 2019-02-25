@@ -46,7 +46,7 @@
             {{item.typeStr == "其他" ? '~' : item.typeStr}}
             </div>
         </div>
-        <div v-show="!loadingStatus" class="fixLetter" ref="fixLetter">
+        <div v-show="fixStr" class="fixLetter" ref="fixLetter">
             {{fixStr}}
         </div>
         <loading v-show="loadingStatus"></loading>
@@ -81,7 +81,7 @@ export default {
             tempIndex:null,         //用来缓存index
             listHeight:[],          //用来存每个字母段高度的数组，用于判断位置区间
             lock:true,
-            fixStr:'A'
+            fixStr:''
         }
     },
     created(){    //仅需使用一次不需要维护的值可写在created内，因为data处于被监听状态会浪费效率
@@ -99,6 +99,7 @@ export default {
             setTimeout(() => {
             // this.refresh()
                 this.calculateHiehgt()
+                this.fixStr = this.addressListData[0].typeStr
                 this.$refs.myScroll.scrollTo(0,0,0,'easing')
                 },20)        //计算高度数组，用于判断滚动到某个位置同步右侧字母
             
@@ -107,7 +108,7 @@ export default {
     },
     methods:{
         onClick(id){
-            console.log(id,'Singer')
+            this.$emit('selectTarget',{id,type:'Singer'})
         },
         onTouchStart(e){             //点击获取deta-index来scrollTo
             this.lock = false        //控制右侧时左侧的监听可以取消

@@ -58,6 +58,13 @@ export default {
             return num = num > 10000 ? parseInt(num/10000) + "万" : num
         },
         myClick(id){
+            this.$router.push({
+                name:'songListPage',
+                params:{
+                    type:this.dataType,
+                    id:id
+                }
+            })
             console.log(id,this.dataType)
         }
     }

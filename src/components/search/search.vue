@@ -69,7 +69,7 @@
                 </div>
                 <my-scroll class="myScroll" :data="searchListData" ref="listScroll">
                     <music-list :nomore="noMore" :songsListData="searchListData"></music-list>
-                    <loading :myOpacity="myOpacity" v-show="loadingStatus"></loading>
+                    <loading :opacity="opacity" v-show="loadingStatus"></loading>
                 </my-scroll>
 
 
@@ -103,7 +103,7 @@ export default {
         return {
             listStatus:true,   //控制list及其中组件的销毁
             viewShow:false,
-            myOpacity:'0',
+            opacity:0,
             hotSearchData:[],
             recSearchData:[],
             searchListData:[],

@@ -1,6 +1,6 @@
 <template>
     <div class="grid-list-wrap">
-        <div class="grid-type-name">{{typeName}}</div>
+        <!-- <div class="grid-type-name">{{typeName}}</div>
         <div class="content-wrap">
             <div class="grid-item" v-for="(item,index) in data" :key="index">
                 <div class="item-cover">
@@ -8,20 +8,20 @@
                     <div class="update-time">{{item.updateFrequency}}</div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 </template>
 
-<script>
-export default {
-    name: "GridList",
-    props:{
-        data:Array,
-        typeName:String
-    },
+// <script>
+// export default {
+//     name: "GridList",
+//     props:{
+//         data:Array,
+//         typeName:String
+//     },
     
-}
-</script>
+// }
+// </script>
 
 <style lang="stylus" scoped>
     .grid-list-wrap

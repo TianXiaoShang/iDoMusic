@@ -86,6 +86,13 @@ export default {
             return newData;
         },
         onClick(id){ //点击官方榜
+            this.$router.push({
+                    name:'songListPage',
+                    params:{
+                        type:this.dataType,
+                        id:id
+                    }
+                })
             console.log(id,'Rank')
         }
     }

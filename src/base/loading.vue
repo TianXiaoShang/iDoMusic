@@ -12,13 +12,13 @@
 export default {
     name:"Loading",
     props:{
-        myOpacity:{
-            type:String,
-            default:'0.5'
+        opacity:{
+            type:Number,
+            default:0.5
         }
     },
     mounted(){
-        this.$refs.loadingWrap.style.background = `rgba(20,20,20,${this.myOpacity})`
+        this.$refs.loadingWrap.style.background = `rgba(20,20,20,${this.opacity})`
     }
 }
 </script>
