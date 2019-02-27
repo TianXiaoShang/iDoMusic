@@ -34,12 +34,18 @@ export default {
             currentFather:-1,
             currentName:null,
             typeShow:true,
-            fatherShow:-1
+            fatherShow:-1,
+            oldFaterShow:-1
         }
     },
     mounted(){
         this.changeType()
-        document.addEventListener('touchstart',this.isClickOut)
+    },
+    activated(){
+        document.addEventListener('touchstart',this.isClickOut)    //用于判断点击区域绑定全局touchstart事件，更改chlidrens状态
+    },
+    deactivated(){
+        document.removeEventListener('touchstart',this.isClickOut)    //用于判断点击区域绑定全局touchstart事件，更改chlidrens状态
     },
     // beforeDestroy() {
     //     console.log('111')
@@ -49,13 +55,15 @@ export default {
         changeFather(fatherIndex){
             this.typeShow = true
             this.currentFather = fatherIndex      //控制children隐藏/显示
+            this.fatherShow = fatherIndex
             if( fatherIndex == -1){               //点击第一个重新请求并不传参数默认对应第一个数据，并且消除子项的样式
                 this.changeType()   
-                this.fatherShow = -1              //父级的样式，在           
+                this.fatherShow = -1              //父级的样式，          
                 this.currentName = null
             }
         },
         changeChild(childName,category, resourceType){
+            this.oldFaterShow = category          //缓存父级当前样式，如果没有切换children则用于切回上次样式
             this.fatherShow = category            //父级的样式由当前子级的所属类型来控制
             this.currentName = childName
             setTimeout(() => {                    //为了给用户看到点击后的反应而延迟隐藏
@@ -71,7 +79,7 @@ export default {
             })
         },
         isClickOut(e){
-            console.log('898998')
+            this.fatherShow = this.oldFaterShow     //在切出时切回父级之前样式
             try{
                 e.path.forEach(item => {
                     if(item == this.$refs.cateGoryWrap){

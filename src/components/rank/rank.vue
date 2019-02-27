@@ -1,6 +1,6 @@
 <template>
     <div class="rankWrap">
-        <my-scroll :data="rankDataMore" class="scroll-wrap">
+        <my-scroll :data="rankDataMore" class="scroll-wrap" ref="myScroll">
             <div class="scroll-content">
                 <div class="rank-list-wrap" v-if="rankDataDetail.length">
                     <div class="rank-type-name">iDo官方榜</div>
@@ -62,6 +62,9 @@ export default {
     created(){
         this._getRankData()
     },
+    activated(){
+        this.$refs.myScroll.refresh()
+    },
     methods:{
         _getRankData(){
             this.loadingStatus = true
@@ -93,7 +96,6 @@ export default {
                         id:id
                     }
                 })
-            console.log(id,'Rank')
         }
     }
 }

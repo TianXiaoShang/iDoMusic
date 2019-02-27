@@ -54,13 +54,13 @@ export default {
   watch:{                    //监听任意数据获取到随后refresh刷新高度
     recSongListData:{
       handler(){
-      this.refreshData = []
+        this.refreshData = []
       },
       deep:true,
     },
     songsListData:{
       handler(){
-      this.refreshData = []
+        this.refreshData = []
       },
       deep:true,
     }
@@ -113,7 +113,10 @@ export default {
         this.checkLoad = true
       }
     }
-  }
+  },
+  activated(){
+        this.$refs.scroll.refresh()     //go(-1)后不能滚动的问题
+    },
 };
 </script>
 

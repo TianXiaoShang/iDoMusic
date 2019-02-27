@@ -104,6 +104,9 @@ export default {
                 },20)        //计算高度数组，用于判断滚动到某个位置同步右侧字母
             
             // this.scrollTo(this.currentIndex) 
+        },
+        refresh(){
+            this.$refs.myScroll.refresh()
         }
     },
     methods:{

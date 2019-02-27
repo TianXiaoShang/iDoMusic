@@ -96,7 +96,10 @@ export default {
         changeScrollTo(){      //切换类型后滚动到顶端
             this.$refs.scrollWrap.scrollTo(0,0,200)
         },
-    }
+    },
+    activated(){
+        this.$refs.scrollWrap.refresh()
+    },
 
 }
 </script>

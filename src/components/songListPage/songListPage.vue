@@ -4,6 +4,7 @@
             <div class="fliterCover" ref="fliterCover" :key="this.$route.params.id"></div>
             <div class="title">
                 <img src="@/assets/back.png" alt="" class="back-icon" @click="onBack">
+                <div class="type">{{type}}</div>
             </div>
 
             <div class="info">
@@ -19,12 +20,14 @@
                     </my-scroll>
                 </div>
             </div>
+            <div class="play-all">
+                <img src="@/assets/playall.png" alt="" class="play-icon">
+            </div>
             <div class="radius"></div>
         </div>
         <music-list class="musicList" :songsListData="songListData"></music-list>
         <loading v-if="loadingStatus" :opacity="opacity"></loading>
     </div>
-    
 </template>
 
 
@@ -50,7 +53,10 @@ export default {
             songListData:[],
             scrollArr:[],
             loadingStatus:false,
-            opacity:0
+            opacity:0,
+            getArr:[getMixListData, getRankListData, getSingerListData],
+            id:'',
+            type:''
         }
     },
     watch:{
@@ -59,23 +65,26 @@ export default {
         }
     },
     activated(){
-        this.id = this.$route.params.id
-        this.type = this.$route.params.type
-        this._getListData(this.id,this.type)
+        if(this.$route.params.id){                           //处理前进后退逻辑，从播放器退回不重新请求数据
+            this.infoData = {img:'',name:'',description:'',playCount:''} 
+            this.songListData = []
+            this.id = this.$route.params.id
+            this.type = this.$route.params.type
+            this._getListData(this.id,this.type)
+        }
     },
     deactivated(){
-        this.infoData = {img:'',name:'',description:'',playCount:''},
-        this.songListData = []
+        // this.infoData = {img:'',name:'',description:'',playCount:''}
+        // this.songListData = []
     },
     methods:{
         _getListData(id,type){
             this.loadingStatus = true
-            var getArr = [getMixListData, getRankListData, getSingerListData]
             var typeArr = ['Mix', 'Rank', 'Singer']
             var index = typeArr.findIndex(item => {
                 return type === item
             })
-            getArr[index](id).then(res => {
+            this.getArr[index](id).then(res => {
                 if(res && STATUS_TEXT === res.statusText){
                     this.songListData = this.creatDataArr[index](res)
                     this.$refs.fliterCover.style.backgroundImage = `url(${this.infoData.img})`
@@ -129,7 +138,7 @@ export default {
 </script>
 
 
-<style lang="stylus" scoped>4
+<style lang="stylus" scoped>
 @import '~common/styles/variable'
  
 .songListPage-wrap
@@ -139,15 +148,16 @@ export default {
     bottom 0
     right 0
     background white
+    z-index 995
     .musicList
         position absolute 
-        top 199px
+        top 210px
         bottom 0
         width 100%
     .list-detail-content
         position relative
         width 100%
-        height 200px
+        height 210px
         overflow hidden
         .fliterCover
             position absolute 
@@ -164,17 +174,26 @@ export default {
             box-sizing border-box
             top 0
             left 0
-            padding 10px 5px
+            padding 6px 10px
             width 100%
-            height 46px
+            height 34px
+            background rgba(255,255,255,0.2)
             .back-icon
                 position relative
                 z-index 991
                 height 100%
+            .type
+                position absolute 
+                left 50%
+                top 50%
+                transform translate(-50%,-50%)
+                font-size 18px
+                color $themeColor
+                text-shadow 1px 1px 2px white
         .info
             display flex
             position absolute
-            top 40px
+            top 45px
             width 100%
             align-items center
             .cover
@@ -210,7 +229,7 @@ export default {
                     background-repeat no-repeat
             .info-detail
                 flex-grow 1
-                margin 8px 10px
+                margin 0 10px
                 background rgba(255,255,255,0.6)
                 padding 5px 10px
                 border-radius 5px
@@ -218,19 +237,30 @@ export default {
                     font-size 17px
                     font-weight 600
                     color $themeColor
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    display: -webkit-box;
-                    -webkit-line-clamp: 2; //行数
-                    -webkit-box-orient: vertical;
+                    overflow  hidden 
+                    text-overflow ellipsis 
+                    display -webkit-box 
+                    -webkit-line-clamp 2  //行数
+                    -webkit-box-orient vertical 
                 .myScroll
+                    flex 1
                     margin-top 3px
-                    height 60px
+                    max-height 60px
                     overflow hidden
                     word-wrap break-word
                     .more
                         font-size 14px
-                        // word-wrap break-word
+                        word-wrap break-word
+                        color rgb(70,70,70)
+        .play-all
+            position absolute
+            bottom 0px
+            left 50%
+            transform translate(-50%)
+            width 140px
+            z-index 2
+            .play-icon
+                width 100%
         .radius
             position absolute 
             bottom -25px
@@ -238,6 +268,4 @@ export default {
             height 50px
             border-radius 50%
             background white
-
-
 </style>

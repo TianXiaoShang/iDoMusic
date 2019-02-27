@@ -1,8 +1,7 @@
 <template>
     <div class="MusicList-warp">
-        <my-scroll :data="songsListData" class="myScroll"  v-if="songsListData.length">
+        <my-scroll ref="myScroll" :data="songsListData" class="myScroll"  v-show="songsListData.length">
             <div class="scroll-content">
-                <div class="noMore" v-if="nomore">没有为您找到相关资源~</div>
                 <div class="content">
                     <div class="title">{{MusicListTitle}}</div>
                     <div class="item" v-for="(item,index) in songsListData" :key="index" @click="onClick(item.id,item.type)">
@@ -22,16 +21,25 @@
                 </div>
             </div>
         </my-scroll>
-        
+        <loading :opacity="opacity" v-show="loadingStatus"></loading>
     </div>
 </template>
 
 <script>
 import myScroll from 'base/myScroll'
+import loading from "base/loading"
+
+
 export default {
     name:'MusicList',
     components:{
-        myScroll
+        myScroll,
+        loading
+    },
+    data(){
+        return {
+            opacity:0,
+        }
     },
     props:{
         songsListData:{
@@ -41,12 +49,26 @@ export default {
             type:String,
             default:''
         },
-        nomore:false
+        loadingStatus:Boolean
     },
     methods:{
         onClick(id,type){
-            console.log(id,type)
+            if(type === 'Song'){
+                this.$router.push({
+                name:'player',
+                params:{
+                    id
+                }
+            })
+            }else{
+                this.$emit('selectTarget',{id,type})
+            }
         },
+        scrollTo(){
+            // this.$refs.myScroll.scrollTo(...arguments)   //都行
+            this.$refs.myScroll.scrollTo.call(null,...arguments)   //都行
+            
+        }
     },
 }
 </script>
@@ -59,16 +81,12 @@ export default {
             width 100%
             height 100%
             overflow hidden
-            background-image url('../assets/BgImage1.png')
-            background-size cover
+            background white
             .scroll-content
-                padding 5px
+                width 100%
+                min-height 100%
+                padding 5px 0
                 background white
-                .noMore
-                    text-align center
-                    padding 10px 0
-                    color #bbb
-                    font-size 15px
                 .content
                     width 100%
                     .title
@@ -85,35 +103,32 @@ export default {
                         justify-content space-between
                         border-bottom 1px solid #eee
                         .cover-img
-                            margin-left 10px
                             flex-shrink 0
-                            width 50px
-                            height 50px
-                            overflow hidden
                             .item-img
-                                height 100%
-                                width 100%
+                                margin-left 10px
+                                width 50px
+                                height 50px
                         .info
-                            box-sizing border-box
                             display flex
+                            box-sizing border-box
                             height 100%
+                            width 100%
                             flex-grow 1
                             overflow hidden
-                            width 100%
-                            padding 0 10px
                             .song-info
+                                width 90%
                                 box-sizing border-box
                                 display flex
                                 flex-direction column
-                                height 100%
-                                width 80%
-                                flex-grow 1
+                                // flex-basis 50%
+                                // flex-grow 1
                                 justify-content center
-                                margin-right 10px
+                                overflow hidden
                                 .song-name 
                                 .singer-list
+                                    padding 0 10px
                                     font-size 15px
-                                    width 100%
+                                    width 90%
                                     overflow hidden
                                     white-space nowrap
                                     text-overflow ellipsis
@@ -122,12 +137,12 @@ export default {
                                     font-size 11px
                                     color $fontGray
                             .play
-                                height 100%
+                                flex-shrink 0
+                                width 10%
                                 display flex
                                 align-items center
                                 .play-img
-                                    height 32%
-                            
+                                    width 20px
 
             
 </style>

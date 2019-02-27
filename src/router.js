@@ -8,6 +8,7 @@ import Rank from "components/rank/rank"
 import Singer from "components/singer/singer"
 import MusicList from 'base/MusicList'
 import SongListPage from 'components/songListPage/songListPage'
+import player from 'components/player/player'
 
 export default new Router({
     routes:[
@@ -17,10 +18,12 @@ export default new Router({
         },
         {
             path:'/recommend',
+            meta:{index:0},
             component:Recommend
         },
         {
             path:"/songs",
+            meta:{index:1},
             component:Songs,
             // beforeEnter: (to, from ,next) => {
             //     // console.log(1111)
@@ -29,17 +32,31 @@ export default new Router({
         },
         {
             path:'/rank',
+            meta:{index:2},
             component:Rank
         },
         {
             path:'/singer',
+            meta:{index:3},
             component: Singer
         },
         {
             path:'/songListPage',
+            meta:{index:4},
             name:'songListPage',
             component: SongListPage
+        },
+        {
+            path:'/player',
+            meta:{index:5},
+            name:'player',
+            components: {player:player}
         }
+
+
+
+
+
         // {
         //     path:'/searchType',
         //     components:{

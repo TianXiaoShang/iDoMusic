@@ -65,7 +65,6 @@ export default {
                     id:id
                 }
             })
-            console.log(id,this.dataType)
         }
     }
 }

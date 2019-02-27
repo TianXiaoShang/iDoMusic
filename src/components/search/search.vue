@@ -33,25 +33,15 @@
                             >{{item.first}}</span>
                         </div>
                     </div>
-                    <div class="search-history">
-                        <div class="history-title">
-                            <div class="title-name">搜索历史</div>
-                            <img src="@/assets/clear.png" alt="" 
-                            class="clear-icon" 
-                            @click="myClearHistory">
-                        </div>
-                        <div class="history-content" 
-                        v-for="(item, index) in searchHistoryData" 
-                        :key="index">
-                            <div class="history-item" @click='selectRecKeyword'>
-                                <div class="item-name">{{item}}</div>
-                                <img class="delete-icon" 
-                                src='@/assets/delete.png' 
-                                @click.stop.prevent="myDeleteHistory(index)">
-                            </div>
-                        </div>
-                        <div class="noMore" v-if="!searchHistoryData.length">暂无搜索历史，快跟iDo浪起来~</div>
-                    </div>
+                    <play-list 
+                    :playListData="searchHistoryData"
+                    :title="historyTitle"
+                    :hint='historyHint'
+                    @myClear="myClearHistory"
+                    @myDelete="myDeleteHistory"
+                    @mySelect="selectRecKeyword"
+                    ></play-list>
+
                 </div>
             </my-scroll>
                     
@@ -67,12 +57,8 @@
                     {{item}}
                     </div>
                 </div>
-                <my-scroll class="myScroll" :data="searchListData" ref="listScroll">
-                    <music-list :nomore="noMore" :songsListData="searchListData"></music-list>
-                    <loading :opacity="opacity" v-show="loadingStatus"></loading>
-                </my-scroll>
-
-
+                <music-list :loadingStatus="loadingStatus" @selectTarget="selectTarget" :songsListData="searchListData" class="music-list" ref="listScroll"></music-list>
+                <div class="noMore" v-show="noMore">没有为您找到相关资源~</div>
                 <!-- <router-view name="search"></router-view> -->
             </div>
         </div>
@@ -95,7 +81,7 @@ import {_creatListData, filterSinger, DATA_TYPE} from 'common/js/creatListData'
 import {getSearchHistory, setSearchHistory, deleteSearchHistory, clearSearchHistory} from 'common/js/cache'
 import musicList from "base/MusicList"
 import myScroll from "base/myScroll"
-import loading from "base/loading"
+import PlayList from 'base/playList' 
 
 export default {
     name: "Search",
@@ -103,7 +89,8 @@ export default {
         return {
             listStatus:true,   //控制list及其中组件的销毁
             viewShow:false,
-            opacity:0,
+            historyTitle:'搜索历史',
+            historyHint:"暂无搜索历史，快跟iDo浪起来~",
             hotSearchData:[],
             recSearchData:[],
             searchListData:[],
@@ -129,7 +116,7 @@ export default {
     components:{
         musicList,
         myScroll,
-        loading
+        PlayList
     },
     methods:{
         myFocus(e){                      //input聚焦上弹窗口
@@ -145,7 +132,7 @@ export default {
             this.myTimer = setTimeout(() => {
                 this._getRecSearchData()
                 this.recShow = true      //在输入的时候解锁，使得推荐搜索显示
-            },500)
+            },400)
             // this.keyWords = this.value
         },
         myClose(){                         //关闭弹窗，downOut
@@ -154,7 +141,7 @@ export default {
             setTimeout(()=>{
                 this.listStatus = false
                 this.viewShow = false
-            },500)
+            },400)
             this.value = ''                //清空value
             this.currentType = 0           //将type归零
             // this.$router.push({path:'/recommend'})
@@ -189,18 +176,21 @@ export default {
             // })
         },
         clickSearch(){                     //点击搜索图标
+            this.viewShow = true
             this.currentType = 0
             this.listStatus = true      //渲染list及组件并延迟执行style否则报错
-            this.$refs.viewContent.style.top = '55px'
+            this.recShow = false           //搜索时可以关闭推荐搜索
+            setTimeout(() => {
+                this.$refs.viewContent.style.top = '55px'
+            },20)
             if(this.value){
                 setTimeout(() =>{
                     this.$refs.listWrap.style.top = 30 + 'px'
+                    this.allListData = []
+                    this.searchListData = []
+                    this._getSearchData()
                 },20)
             }
-            this.recShow = false           //搜索时可以关闭推荐搜索
-            this.allListData = []
-            this.searchListData = []
-            this._getSearchData()
         },
         _getSearchData(){                  //搜索数据
             this.noMore = false
@@ -212,6 +202,7 @@ export default {
                 if(res.statusText === STATUS_TEXT){
                     this.loadingStatus = false
                     if(res.data.result.songCount == 0 ){
+
                         this.noMore = true        //如果数量为0说明没有数据，提示用户
                         return
                     }
@@ -219,6 +210,18 @@ export default {
                     this.searchListData = this.allListData[type]
                 }
             })
+        },
+        selectTarget(ops){
+            if(ops.type != 'Song'){
+                 this.$router.push({
+                    name:'songListPage',
+                    params:{
+                        type:ops.type,
+                        id:ops.id
+                    }
+                })
+            // this.myClose()
+            }
         },
         
         creatSongData(data){              //创建song数据格式
@@ -258,13 +261,11 @@ export default {
                     }
                 })
         },
-        myDeleteHistory(e){               //删除某条搜索历史
-            this.searchHistoryData = deleteSearchHistory(e)
-            console.log('DeleteHistory')
+        myDeleteHistory(index){               //删除某条搜索历史
+            this.searchHistoryData = deleteSearchHistory(index)
         },
-        myClearHistory(index){           //清除全部搜索历史
+        myClearHistory(){           //清除全部搜索历史
             this.searchHistoryData = clearSearchHistory()
-            console.log('ClearHistory')
         },
         _getRecSearch(){                 //获取热搜数据
              getHotRecSearchData().then(res => {{
@@ -333,7 +334,7 @@ export default {
         .view-content
             position absolute
             width 100%
-            z-index 998
+            z-index 990
             background rgba(250,250,250,1)
             border-radius 15px 15px 0 0
             transition top 0.4s
@@ -350,6 +351,7 @@ export default {
                 overflow hidden
                 .hotRec-wrap
                     width 100%
+                    margin-bottom 20px
                     .hot-title
                         height 30px
                         line-height 30px
@@ -373,40 +375,7 @@ export default {
                             margin 5px
                             border-radius 15px
                             background #eee
-                .search-history
-                    width 100%
-                    margin-top 30px
-                    .history-title
-                        display flex
-                        justify-content space-between
-                        align-items center
-                        height 30px
-                        margin 5px 20px
-                        border-bottom 1px solid $themeColor
-                        .title-name
-                            font-weight 600
-                            color $themeColor
-                            font-size 18px
-                        .clear-icon
-                            width 25px
-                    .history-content
-                        width 100%
-                        .history-item
-                            display flex
-                            align-items center
-                            justify-content space-between
-                            margin 4px 20px
-                            border-bottom 1px solid #eee
-                            .item-name
-                                font-size 16px
-                                padding 4px 0
-                            .delete-icon
-                                width 20px
-                    .noMore
-                        text-align center
-                        padding 10px 0
-                        color #bbb
-                        font-size 15px
+                
             .search-list-wrap
                 position absolute
                 top 100%
@@ -415,7 +384,7 @@ export default {
                 width 100%
                 background white
                 transition top 0.4s
-                .myScroll
+                .music-list
                     position absolute 
                     top 35px
                     bottom 0
@@ -438,11 +407,17 @@ export default {
                         &.active
                             color $themeColor
                             border-bottom 1.5px solid $themeColor
+                .noMore
+                    width 100%
+                    text-align center
+                    padding 10px 0
+                    color #bbb
+                    font-size 15px
         .recSearch-wrap
             position absolute 
             box-sizing border-box
             background white
-            z-index 999
+            z-index 998
             margin 0 auto
             left 0
             right 0

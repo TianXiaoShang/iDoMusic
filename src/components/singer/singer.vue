@@ -1,7 +1,7 @@
 <template>
     <div class="singer-wrap">
         <category :categoryData="singerTypeData"  @changeType="changeSingerType"></category>
-        <address-list :loadingStatus="loadingStatus" @selectTarget="selectSinger" :addressListData="singersData"></address-list>
+        <address-list ref="address" :loadingStatus="loadingStatus" @selectTarget="selectSinger" :addressListData="singersData"></address-list>
     </div>
 </template>
 
@@ -22,6 +22,9 @@ export default {
             loadingStatus:false,    //loading的显示状态
             oldType:-1
         }
+    },
+    activated(){
+        this.$refs.address.refresh()
     },
     created(){
         this._getSingerData()
