@@ -8,7 +8,6 @@ import Rank from "components/rank/rank"
 import Singer from "components/singer/singer"
 import MusicList from 'base/MusicList'
 import SongListPage from 'components/songListPage/songListPage'
-import player from 'components/player/player'
 
 export default new Router({
     routes:[
@@ -46,12 +45,12 @@ export default new Router({
             name:'songListPage',
             component: SongListPage
         },
-        {
-            path:'/player',
-            meta:{index:5},
-            name:'player',
-            components: {player:player}
-        }
+        // {
+        //     path:'/player',
+        //     meta:{index:5},
+        //     name:'player',
+        //     components: {player:player}
+        // }
 
 
 

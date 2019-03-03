@@ -4,7 +4,7 @@
             <div class="scroll-content">
                 <div class="content">
                     <div class="title">{{MusicListTitle}}</div>
-                    <div class="item" v-for="(item,index) in songsListData" :key="index" @click="onClick(item.id,item.type)">
+                    <div class="item" v-for="(item,index) in songsListData" :key="index" @click="onClick(item.id,item.type,index)">
                         <div v-if="item.imageUrl" class="cover-img">
                             <img v-lazy="item.imageUrl" :key="item.imageUrl" alt="" class="item-img">
                         </div>
@@ -52,24 +52,15 @@ export default {
         loadingStatus:Boolean
     },
     methods:{
-        onClick(id,type){
-            if(type === 'Song'){
-                this.$router.push({
-                name:'player',
-                params:{
-                    id
-                }
-            })
-            }else{
-                this.$emit('selectTarget',{id,type})
-            }
+        onClick(id,type,index){
+            this.$emit('selectTarget',{id,type,index})
         },
         scrollTo(){
             // this.$refs.myScroll.scrollTo(...arguments)   //都行
             this.$refs.myScroll.scrollTo.call(null,...arguments)   //都行
             
         }
-    },
+    }
 }
 </script>
 
@@ -85,7 +76,7 @@ export default {
             .scroll-content
                 width 100%
                 min-height 100%
-                padding 5px 0
+                padding 5px 0 0 0
                 background white
                 .content
                     width 100%
@@ -98,8 +89,9 @@ export default {
                         height 50px
                         display flex
                         align-items center
-                        margin-bottom 10px
+                        margin-top 10px
                         background white
+                        box-sizing border-box
                         justify-content space-between
                         border-bottom 1px solid #eee
                         .cover-img

@@ -105,10 +105,12 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+@import "~common/styles/variable"
+
         .songs-wrap
             position fixed
             top 94px
-            bottom 0px
+            bottom $miniPlayerHeight
             width 100%
             .scroll-wrap
                 position absolute

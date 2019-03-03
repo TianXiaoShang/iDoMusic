@@ -106,7 +106,7 @@ export default {
     .rankWrap
         position fixed
         top 94px
-        bottom 0
+        bottom $miniPlayerHeight
         width 100%
         .scroll-wrap
             width 100%

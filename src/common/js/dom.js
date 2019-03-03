@@ -20,5 +20,5 @@ export function getData(el,type,val){
     if (val) {
       return el.setAttribute(prefix + type, val)
     }
-    return el.getAttribute(prefix + type)//获取到的这个值是一个字符串，！！！！一定要做类型转换处理
+    return el.getAttribute(prefix + type)           //获取到的这个值是一个字符串，！！！！一定要做类型转换处理
 }

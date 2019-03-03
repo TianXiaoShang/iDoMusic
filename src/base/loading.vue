@@ -14,7 +14,7 @@ export default {
     props:{
         opacity:{
             type:Number,
-            default:0.5
+            default:0.08
         }
     },
     mounted(){

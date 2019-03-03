@@ -33,7 +33,8 @@
                             >{{item.first}}</span>
                         </div>
                     </div>
-                    <play-list 
+                    <play-list
+                    class=needsclick
                     :playListData="searchHistoryData"
                     :title="historyTitle"
                     :hint='historyHint'
@@ -41,7 +42,6 @@
                     @myDelete="myDeleteHistory"
                     @mySelect="selectRecKeyword"
                     ></play-list>
-
                 </div>
             </my-scroll>
                     
@@ -57,7 +57,7 @@
                     {{item}}
                     </div>
                 </div>
-                <music-list :loadingStatus="loadingStatus" @selectTarget="selectTarget" :songsListData="searchListData" class="music-list" ref="listScroll"></music-list>
+                <music-list  :loadingStatus="loadingStatus" @selectTarget="selectTarget" :songsListData="searchListData" class="music-list" ref="listScroll"></music-list>
                 <div class="noMore" v-show="noMore">没有为您找到相关资源~</div>
                 <!-- <router-view name="search"></router-view> -->
             </div>
@@ -82,6 +82,9 @@ import {getSearchHistory, setSearchHistory, deleteSearchHistory, clearSearchHist
 import musicList from "base/MusicList"
 import myScroll from "base/myScroll"
 import PlayList from 'base/playList' 
+import {mapActions} from 'vuex'
+
+var $miniPlayerHeight = '45'   //mini播放器高度
 
 export default {
     name: "Search",
@@ -221,8 +224,13 @@ export default {
                     }
                 })
             // this.myClose()
+            }else if(ops.type === 'Song'){
+                this.selectPlay({list:this.searchListData, index:ops.index,id:ops.id})
             }
         },
+        ...mapActions([
+            'selectPlay'
+        ]),
         
         creatSongData(data){              //创建song数据格式
             data = data.data.result.songs
@@ -262,6 +270,7 @@ export default {
                 })
         },
         myDeleteHistory(index){               //删除某条搜索历史
+        console.log(1212)
             this.searchHistoryData = deleteSearchHistory(index)
         },
         myClearHistory(){           //清除全部搜索历史
@@ -277,7 +286,7 @@ export default {
         _initHeight(){                  //初始化弹窗height及top
             this.ClientHeight = document.documentElement.clientHeight
             this.$refs.viewContent.style.top = this.ClientHeight + 'px'
-            this.$refs.viewContent.style.height = this.ClientHeight - 55 + 'px'
+            this.$refs.viewContent.style.height = this.ClientHeight - 55 -$miniPlayerHeight + 'px'
         },
         myStart(){
             this.recShow = false   
@@ -333,8 +342,9 @@ export default {
 
         .view-content
             position absolute
+            // bottom $miniPlayerHeight
             width 100%
-            z-index 990
+            z-index 988
             background rgba(250,250,250,1)
             border-radius 15px 15px 0 0
             transition top 0.4s

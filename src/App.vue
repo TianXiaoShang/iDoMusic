@@ -7,11 +7,8 @@
               <router-view></router-view>
         </keep-alive>
       </transition>
-      <transition name="playerFade">
-        <keep-alive>
-              <router-view name="player"></router-view>
-        </keep-alive>
-      </transition>
+      <player></player>
+      
   </div>
 </template>
 
@@ -19,6 +16,8 @@
 <script>
 import search from 'components/search/search'
 import tab from 'components/tab/tab'
+import player from 'components/player/player'
+
 export default {
   name: "App",
   data(){
@@ -28,18 +27,11 @@ export default {
   },
   components: {
       search,
-      tab
+      tab,
+      player
   },
   watch:{
-    $route(to,from){
-      // if(to.meta.index === 5){
-      //   this.myFade = ''
-      //   return
-      // }
-      // if(to.meta.index === 5 || from.meta.index ===5){
-      //   this.myFade = ''
-      //   return
-      // }
+    $route(to,from){                 //动画判断
       if(to.meta.index > from.meta.index){
         this.myFade = 'slide-left';
       }else{
@@ -89,20 +81,4 @@ export default {
         opacity: 0;
         transform: translate3d(-100%,-0, 0);
       }
-
-      .playerFade-enter-active,
-      .playerFade-leave-active {
-        will-change: transform;
-        transition: all 500ms;
-        position: absolute;
-      }
-      .playerFade-enter {
-        opacity: 0;
-        transform: translate3d(40%,40%, 0);
-      }
-      .playerFade-leave-active {
-        opacity: 0;
-        transform: translate3d(40%, 40%, 0);
-      }
-
 </style>

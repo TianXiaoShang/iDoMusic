@@ -58,6 +58,7 @@ export default {
             this.fatherShow = fatherIndex
             if( fatherIndex == -1){               //点击第一个重新请求并不传参数默认对应第一个数据，并且消除子项的样式
                 this.changeType()   
+                this.oldFaterShow = -1            //维护一个oldFaterShow,用于在隐藏子级的时候切回正当前所在父级类型
                 this.fatherShow = -1              //父级的样式，          
                 this.currentName = null
             }
@@ -79,17 +80,17 @@ export default {
             })
         },
         isClickOut(e){
-            this.fatherShow = this.oldFaterShow     //在切出时切回父级之前样式
             try{
                 e.path.forEach(item => {
                     if(item == this.$refs.cateGoryWrap){
-                        throw new Error('StopIteration')      //如果点击的是二级菜单区域则跳出循环
+                        throw new Error('StopIteration')      //如果点击的是二级菜单区域则跳出循环并在catch中return
                     }
                 })  
             }catch(e){
                 if (e.message !== 'StopIteration')  throw e
                 return          
             }
+            this.fatherShow = this.oldFaterShow     //在切出时，切回父级之前样式
             this.typeShow = false    //如果包含this.$refs.cateGoryWrap则在上方return,否则赋值false隐藏
         }
     }
@@ -105,6 +106,8 @@ export default {
         padding 0px 10px
         background white
         display flex
+        position relative
+        z-index 501
         border-bottom 1px solid $themeColor
         .item
             flex-grow 1
@@ -157,5 +160,3 @@ export default {
                     background $themeColor
 
 </style>
-
-

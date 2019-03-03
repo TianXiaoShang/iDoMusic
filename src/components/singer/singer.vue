@@ -1,7 +1,7 @@
 <template>
     <div class="singer-wrap">
         <category :categoryData="singerTypeData"  @changeType="changeSingerType"></category>
-        <address-list ref="address" :loadingStatus="loadingStatus" @selectTarget="selectSinger" :addressListData="singersData"></address-list>
+        <address-list class="address-list" ref="address" :loadingStatus="loadingStatus" @selectTarget="selectSinger" :addressListData="singersData"></address-list>
     </div>
 </template>
 
@@ -101,4 +101,17 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+@import "~common/styles/variable"
+
+    .singer-wrap
+        position fixed
+        top 94px
+        bottom $miniPlayerHeight
+        width 100%
+        overflow hidden
+        .address-list
+            width 100%
+            height 100%
+            padding-bottom 40px
+            box-sizing border-box
 </style>

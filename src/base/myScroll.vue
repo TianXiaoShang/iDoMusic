@@ -88,6 +88,7 @@
         this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments)
       },
       scrollToElement() {
+        // this.scroll.scrollToElement(...arguments)
         this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments)
       }
     },

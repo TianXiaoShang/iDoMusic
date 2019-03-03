@@ -21,11 +21,11 @@
                 </div>
             </div>
             <div class="play-all">
-                <img src="@/assets/playall.png" alt="" class="play-icon">
+                <img @click="playAll" src="@/assets/playall.png" alt="" class="play-icon">
             </div>
             <div class="radius"></div>
         </div>
-        <music-list class="musicList" :songsListData="songListData"></music-list>
+        <music-list @selectTarget="selectTarget" class="musicList" :songsListData="songListData"></music-list>
         <loading v-if="loadingStatus" :opacity="opacity"></loading>
     </div>
 </template>
@@ -38,6 +38,8 @@ import MusicList from 'base/MusicList'
 import { STATUS_TEXT } from "api/config"
 import myScroll from 'base/myScroll'
 import loading from 'base/loading'
+import {mapActions} from 'vuex'
+
 
 export default {
     name:"SongListPage",
@@ -132,7 +134,16 @@ export default {
             if(count && count > 10000){
                 return ((count / 10000) | 0) +'万'
             }
-        }
+        },
+        playAll(){
+            this.selectPlay({list:this.songListData, index:0,id:this.songListData[0].id})
+        },
+        selectTarget(ops){            
+            this.selectPlay({list:this.songListData, index:ops.index,id:ops.id})
+        },
+        ...mapActions([
+            'selectPlay'
+        ]),
     }
 }
 </script>
@@ -145,10 +156,10 @@ export default {
     position fixed
     left 0
     top 0
-    bottom 0
+    bottom $miniPlayerHeight
     right 0
     background white
-    z-index 995
+    z-index 989
     .musicList
         position absolute 
         top 210px

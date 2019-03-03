@@ -104,9 +104,6 @@ export default {
                 },20)        //计算高度数组，用于判断滚动到某个位置同步右侧字母
             
             // this.scrollTo(this.currentIndex) 
-        },
-        refresh(){
-            this.$refs.myScroll.refresh()
         }
     },
     methods:{
@@ -194,73 +191,70 @@ export default {
 
 <style lang="stylus" scoped>
 @import "~common/styles/variable"
-    .address-list-wrap
-        position fixed
-        top 134px
-        bottom 0
+.address-list-wrap
+    position relative
+    .scroll-wrap
         width 100%
+        height 100%
         overflow hidden
-        .scroll-wrap
+        background-image url('../assets/BgImage1.png')
+        background-size cover
+        .scroll-content
             width 100%
-            height 100%
-            overflow hidden
-            background-image url('../assets/BgImage1.png')
-            background-size cover
-            .scroll-content
+            background white
+            .classify
                 width 100%
-                background white
-                .classify
+                .typeName
+                    box-sizing border-box
+                    height 30px
+                    padding 4px 10px
+                    font-size 16px
+                    background rgb(242,242,242)
+                    color $themeColor
+                .classify-content
+                    padding 0 20px
                     width 100%
-                    .typeName
-                        box-sizing border-box
-                        height 30px
-                        padding 4px 10px
-                        font-size 16px
-                        background rgb(242,242,242)
-                        color $themeColor
-                    .classify-content
-                        padding 0 20px
+                    .item-detail
+                        display flex
                         width 100%
-                        .item-detail
-                            display flex
-                            width 100%
+                        overflow hidden
+                        align-items center
+                        padding 8px 0px
+                        .coverImg
+                            width 50px
+                            height 50px
+                            border-radius 50%
                             overflow hidden
-                            align-items center
-                            padding 8px 0px
-                            .coverImg
-                                width 50px
-                                height 50px
-                                border-radius 50%
-                                overflow hidden
-                            .item-name
-                                margin-left 15px
-                                font-size 14px
-        .letters-wrap
-            padding 15px 0
-            background #ddd
-            opacity 0.9
-            position absolute 
-            top 15%
-            right 8px
-            border-radius 15px
-            .letterStr
-                box-sizing border-box
-                height 18px
-                font-size 12px 
-                padding 1px 3px 1px 4.5px
-                &.active
-                    color $themeColor 
-        .fixLetter
-            position absolute
-            top 0
-            left 0
-            width 100%
+                        .item-name
+                            margin-left 15px
+                            font-size 14px
+    .letters-wrap
+        padding 15px 0
+        background #ddd
+        opacity 0.9
+        position absolute 
+        top 40px
+        right 8px
+        border-radius 15px
+        z-index 500
+        .letterStr
             box-sizing border-box
-            height 30px
-            padding 4px 10px
-            font-size 16px
-            background rgb(242,242,242)
-            color $themeColor
+            height 18px
+            font-size 12px 
+            padding 1px 3px 1px 4.5px
+            &.active
+                color $themeColor 
+    .fixLetter
+        position absolute
+        top 0
+        left 0
+        width 100%
+        box-sizing border-box
+        height 30px
+        padding 4px 10px
+        font-size 16px
+        background rgb(242,242,242)
+        color $themeColor
                             
 
 

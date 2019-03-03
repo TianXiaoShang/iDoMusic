@@ -10,7 +10,7 @@
                 </div>
             </Slider>
             <song-list v-if="recSongListData.length" :songListData='recSongListData' :titleTypeName="titleTypeName"></song-list>
-            <music-list v-if="songsListData.length" :MusicListTitle="MusicListTitle" :songsListData="songsListData"></music-list>
+            <music-list @selectTarget="selectTarget" v-if="songsListData.length" :MusicListTitle="MusicListTitle" :songsListData="songsListData"></music-list>
         </div>
       </my-scroll>
     </div>
@@ -26,6 +26,7 @@ import songList from 'base/songList'
 import getRecSongListData from 'api/recSongList'
 import {_creatGridData, _creatListData, filterSinger, DATA_TYPE} from 'common/js/creatListData'
 import MusicList from 'base/MusicList'
+import {mapActions} from 'vuex'
 
 
 export default {
@@ -92,6 +93,12 @@ export default {
         }
       })
     },
+    selectTarget(ops){            
+      this.selectPlay({list:this.songsListData, index:ops.index,id:ops.id})
+    },
+    ...mapActions([
+        'selectPlay'
+    ]),
     creatGridData(data){                //创建数据格式
       var newData = []
       data.forEach((item, index) => {
@@ -125,12 +132,12 @@ export default {
 .myScrollWrap
   position fixed
   top 93px
-  bottom 0
+  bottom $miniPlayerHeight
   width 100%
   .scroll-wrap
     height 100%
     overflow hidden
-    background-image url('../../assets/BgImage1.png')
+    background-image url('../../assets/BgImage2.png')
     background-size cover
     .scroll-content
       background white
