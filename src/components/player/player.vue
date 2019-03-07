@@ -1,27 +1,62 @@
 <template>
     <div class="wrap">
         <transition name="fullPlayer">
-            <div class="player" v-show="showPlayer">
+            <div 
+            class="player" 
+            v-show="showPlayer" 
+            @touchstart.prevent="onTouchStart"
+            @touchend.prevent="onTouchEnd">
                 <div class="background-image">
                     <img :style="{backgroundImage:`url(${musicData.imageUrl || miniUrl})`}" :key='musicData.imageUrl' alt="" class="bg-img">
                     <div class="bg-filter"></div>
                 </div>
+                //back区域
                 <div class="title">
                     <div class="back">
                         <img src="@/assets/downWhite.png" alt="" class="back-icon" @click="backClick">
                     </div>
                 </div>
-                <div class="music-detail">
-                    <div class="music-name">{{musicData.name}}</div>
-                    <div class="cover">
-                        <div class="border">
-                            <div :class="{play:playStatus == true,'play pause':playStatus == false}" :style="{backgroundImage:`url(${musicData.imageUrl || miniUrl})`}" :key='musicData.imageUrl' class="img"></div>
+                
+                //player首页
+                <transition :name="myShowPage">
+                    <div class="music-detail" v-show="showPage">
+                        <div class="music-name">{{musicData.name}}</div>
+                        <div class="cover">
+                            <div class="border">
+                                <div :class="{play:playStatus == true,'play pause':playStatus == false}" :style="{backgroundImage:`url(${musicData.imageUrl || miniUrl})`}" :key='musicData.imageUrl' class="img"></div>
+                            </div>
+                        </div>
+                        <div class="music-info">
+                            <div class="singer-ablum">{{musicData.album}}</div>
+                            <div class="currentTxt">{{currentTxt}}</div>
+                        </div>
+                        <div class="proBar" v-if="Object.keys(this.musicData).length">
+                            <progress-bar @changePerc="changePerc" :currentTime="currentTime" :audioDur="audioDur" :percentage="percentage"></progress-bar>
                         </div>
                     </div>
-                    <div class="music-info">
-                        <div class="singer-ablum">{{musicData.album}}</div>
+                </transition>
+
+                //player歌词页
+                <transition :name="myShowPage">
+                    <div class="music-lysic" v-show="!showPage">
+                        <div class="musicName">{{musicData.name}}</div>
+                        <div class="lyricHint" v-if="!myLyric">未找到歌词哦~~~</div>
+                        <my-scroll class='lyricScroll' ref="lyricScroll">
+                            <div class="lyricContent">
+                                <div v-if="myLyric" class='myLyric'>
+                                    <p 
+                                    :class="{currentLyric: lineNum === index}" 
+                                    ref="lyricItem" 
+                                    class="lyricItem" 
+                                    v-for="(item, index) in myLyric.lines" 
+                                    :key="index">{{item.txt}}</p>
+                                </div>
+                            </div>
+                        </my-scroll>
                     </div>
-                </div>
+                </transition>
+
+                //controls控制区
                 <div class="controls">
                     <img @click="changeMode" v-show="mode === 'sequence'" src="@/assets/sequence.png" alt="" class="model">
                     <img @click="changeMode" v-show="mode === 'random'" src="@/assets/random.png" alt="" class="model">
@@ -105,6 +140,9 @@ import {getMusicDetailData, getMusicUrlData, getMusicLyricData} from 'api/music'
 import {STATUS_TEXT} from 'api/config'
 import {mapGetters,mapMutations} from 'vuex'
 import playList from 'base/playList'
+import Lyric from 'lyric-parser'
+import myScroll from 'base/myScroll'
+import progressBar from 'base/progressBar'
 
 export default {
     name:'Player',
@@ -120,11 +158,24 @@ export default {
           title:"播放列表",
           continueId:[],                   //保存通过播放列表操作删除后的id，当切歌为改歌曲时index++跳过
           hint:'播放列表为空啦~~，快跟iDo浪起来~~~',
-          cdClass:'pause'
+          cdClass:'pause',
+          myLyric:null,                     //lyric实例
+          firstX:0,                         //用于判断滑动操作
+          laseX:0,
+          offsetX:0,                         //根据差值的正负判断方向以及大小判断是否切换
+          showPage:true,
+          myShowPage:'',                      //动画名字
+          currentTxt:'',                      //当前正在播放的歌词
+          lineNum:0,                          
+          audioDur:0,                         //音频长度（秒）
+          percentage:0,                       //播放百分比
+          currentTime:0                       //当前播放时长
       }  
     },
     components:{
-        playList
+        playList,
+        myScroll,
+        progressBar
     },
     computed:{
         ...mapGetters([
@@ -146,6 +197,21 @@ export default {
     //     currentIndex(){                //同时监听list跟index，其中任何一个改变，都说明更改了播放曲目
     //         this._checkData()
     //     },
+        offsetX(newVal){
+            if(newVal < 0 && Math.abs(newVal) > 100){
+                this.myShowPage = 'showPageRight'
+                this.showPage = !this.showPage
+                var currentItem = this.$refs.lyricItem[this.lineNum - 4]     //歌词跳转到中间部分
+                this.$refs.lyricScroll.scrollToElement(currentItem,500,0,0)
+
+            }else if(newVal > 0 && Math.abs(newVal) > 100){
+                this.myShowPage = 'showPageLeft'
+                this.showPage = !this.showPage
+                var currentItem = this.$refs.lyricItem[this.lineNum - 4]     //歌词跳转到中间部分
+                this.$refs.lyricScroll.scrollToElement(currentItem,500,0,0)
+
+            }
+        },
         playList(){
             this.set_sequenceList(this.playList)
             this.mode === 'random' ? this.randomList() : ''    //进入新的列表页，重新赋值playList并判断是否为random，是则执行打乱从操作
@@ -178,6 +244,14 @@ export default {
             this.set_sequenceList(arr)
         },
         _initData(){                        //musicId改变，开始准备数据
+            if(this.myLyric){               //有歌词的情况下首先清除上一曲的歌词
+            console.log('stop')
+                this.myLyric.stop()
+                this.myLyric = null             //先将上一次的歌词数据清除
+                this.currentTxt = ''
+                this.lineNum = 0
+            }
+            this.showPage = true            //切歌后不返回歌词页
             this.$refs.audio.pause()        //数据请求完之前先暂停之前歌曲
             var index = this.sequenceList.findIndex(item => {              //从列表中查找到当前歌曲的index
                 return item.id === this.musicId
@@ -185,7 +259,8 @@ export default {
             this.sequenceList.length && !this.sequenceList[index].imageUrl ? this._getMusiImage(this.musicId) : ''    //如果数据没有图片则获取图片url（search的数据没有img）
             this.musicData = this.sequenceList[index]    //先把歌曲详情渲染出来
             this._getMusicUrl(this.musicData.id)         //然后请求歌曲rul
-            this.playListScrollTo()                      //将小列表跳转到当前歌曲位置
+            this._getMusicLyric(this.musicData.id)       //请求歌词
+            this.playListScrollTo()                      //将小播放列表跳转到当前歌曲位置
             // this.set_currentIndex(this.myFadeIndex(this.sequenceList))    //点击时index肯定是正常的，而在切歌时，已经修正，所以这里没必要再次修正
         },
         _getMusiImage(id){
@@ -204,11 +279,27 @@ export default {
         },
         _getMusicLyric(id){
                 getMusicLyricData(id).then(res => {
-                    console.log(res)
+                     if(res && res.statusText === STATUS_TEXT && res.data.lrc){
+                         this.myLyric = new Lyric(res.data.lrc.lyric,this.handleLyric)
+                        //  if (this.playStatus) {        //控制歌词播放的条件
+                        //     this.myLyric.play()        //调用插件的play()方法，进行歌词播放
+                        // }
+                    }
                 })
         },
-        changePlayStatus(){           //播放暂停
-            if(!Object.keys(this.musicData).length){    //清除播放列表后，对象为空。防止报错
+        handleLyric(ops){                                 //处理lyric派发的歌词函数
+            this.currentTxt = ops.txt
+            this.lineNum = ops.lineNum
+            console.log(ops)
+            var currentItem = this.$refs.lyricItem[this.lineNum - 4]   //歌词跳转到中间部分
+            if(this.lineNum > 5){
+                this.$refs.lyricScroll.scrollToElement(currentItem,500,0,0)
+            }else{
+                this.$refs.lyricScroll.scrollTo(0,0,500)
+            }
+        },
+        changePlayStatus(){                               //播放暂停
+            if(!Object.keys(this.musicData).length){      //清除播放列表后，对象为空。防止报错
                 return
             }
             if(this.playStatus){
@@ -216,9 +307,10 @@ export default {
             }else{
                 this.$refs.audio.play()
             }
+            this.myLyric.togglePlay()                    //歌词的暂停/播放，将俩联合在一起
             this.set_playStatus(!this.playStatus)
         },
-        changeMode(){
+        changeMode(){                                    //切换播放模式
             var index = this.myMode.findIndex((item) =>{
                 return item === this.mode
             })
@@ -228,7 +320,9 @@ export default {
         
         playNext(){                     //下一曲
             var index = this.currentIndex
-            this.set_playStatus(true)    //切换曲目都自动改成播放状态
+            this.audioDur = 0
+            this.currentTime = 0
+            // this.set_playStatus(true)    //切换曲目都自动改成播放状态
             if(this.currentIndex === this.sequenceList.length -1){
                 this.set_currentIndex(0)
             }else{
@@ -278,21 +372,30 @@ export default {
                 return true
             }
             return false
-            
         },
-        canplay(){                    //数据为可播放状态
-            this.$refs.audio.play()
+        canplay(){                                               //数据为可播放状态
+            this.set_playStatus(true)
+            this.audioDur = this.$refs.audio.duration    //获取音乐长度
+            this.$refs.audio.play()     
+            if(this.myLyric){                                     //防止歌词请求比歌曲慢而报错
+                this.myLyric.play()                               //调用插件的play()方法，进行歌词播放
+            }
         },
-        error(){                      //数据请求失败
+        changePerc(e){                                            //拖动跳转歌词跟歌曲进度
+            var timer = this.audioDur * e
+            this.$refs.audio.currentTime = timer
+            this.myLyric.seek(timer * 1000 | 0)  //跳转不了？？？？？？？？？？？？？
+        },
+        error(){                                                  //数据请求失败
             console.log('error')
             // this.playNext()
         },
-        timeupdate(e){                //播放进度更新，获取当前播放进度
-            // console.log(e)
+        timeupdate(e){                                            //播放进度更新，获取当前播放进度
+            this.currentTime = e.target.currentTime  //当前播放时间
         }, 
-        ended(){                      //播放结束，先判断是否为单曲循环，否则自动播放下一曲
+        ended(){                                                  //播放结束，先判断是否为单曲循环，否则自动播放下一曲
             if(this.mode === 'loop'){   
-                this._initData()     //单曲循环则id不变重复执行init操作即可
+                this._initData()                                  //单曲循环则id不变重复执行init操作即可
                 return
             }
             this.playNext()
@@ -338,6 +441,7 @@ export default {
             this.backClick()
             this.set_playStatus(false)
             this.musicData = {}
+            this.currentTxt = ''
         },
         deletePlayList(index){              //通过index找到name,通过name查找到id。随后删除后的这个保存id
             var musicName = this.showPlayListData[index]
@@ -357,6 +461,7 @@ export default {
             setTimeout(() => this.playListScrollTo() ,20)      //删除前面的会造成样式错乱。需要重新to
         },
         selectPlayList(e){
+            this.set_playStatus(true)
             var musicName = e.target.innerText;
             var myId, myIndex;
             this.sequenceList.forEach((item,index) => {      //通过名字找到id.变更id进行播放，同时修正index
@@ -367,7 +472,19 @@ export default {
             })
             this.set_musicId(myId)
             this.set_currentIndex(myIndex)
-        }
+        },
+
+        onTouchStart(e){
+            if(Object.keys(this.musicData).length){
+                this.firstX = e.changedTouches[0].pageX
+            }
+        },
+        onTouchEnd(e){
+            if(Object.keys(this.musicData).length){
+                this.lastX = e.changedTouches[0].pageX
+                this.offsetX = this.lastX - this.firstX
+            }
+        },
     }
 }
 </script>
@@ -378,11 +495,10 @@ export default {
 .wrap
     width 100%
     .fullPlayer-enter-active,
-    .fullPlayer-leave-active {
-    will-change: transform;
-    transition: all 200ms;
-    position: absolute;
-    }
+    .fullPlayer-leave-active
+        will-change transform
+        transition  all 300ms
+        position absolute
     .fullPlayer-enter
         opacity: 0;
         transform: translate3d(0%,100%, 0);
@@ -415,12 +531,13 @@ export default {
                 height 100%
                 position absolute
                 background-size cover
+                background-position 50% 0%
                 // transform translate(-50%)
                 // left -50%
                 // top -5px      //用于隐藏高斯模糊边上的黑边
                 // height 102%   //用于隐藏高斯模糊边上的黑边
                 background-image url('../../assets/BgImage3.png')
-                filter blur(3px) opacity(50%)
+                filter blur(3px) opacity(32%)
 
         .title
             width 100%
@@ -435,12 +552,69 @@ export default {
                 height 100%
                 .back-icon
                     height 100%
-       
+        .showPageLeft-enter-active,
+        .showPageLeft-leave-active,
+        .showPageRight-enter-active,
+        .showPageRight-leave-active 
+            will-change transform
+            transition all 500ms
+            position absolute
+        .showPageLeft-enter
+            opacity 0
+            transform translate3d(-100%,0%, 0)
+        .showPageLeft-leave-active
+            opacity 0
+            transform translate3d(100%,0%, 0)
+        .showPageRight-enter
+            opacity 0
+            transform translate3d(100%,0%, 0)
+        .showPageRight-leave-active
+            opacity 0
+            transform translate3d(-100%,0%, 0)    
+        .music-lysic
+            position absolute
+            left 0
+            top 0
+            bottom 110px
+            right 0
+            color white
+            .musicName 
+                margin-top 17px
+                font-size 16px
+                color white
+                text-align center
+                padding 0 50px
+                white-space nowrap
+                overflow hidden
+                text-overflow ellipsis
+            .lyricHint
+                text-align center
+                color #eee
+                font-size 15px
+                margin 250px auto
+            .lyricScroll
+                position absolute
+                top 50%
+                transform translate3d(0,-40%,0)
+                height 75%
+                width 100%
+                overflow hidden
+                .lyricContent
+                    width 100%
+                    text-align center
+                    .myLyric
+                        width 100%
+                        .lyricItem
+                            color #aaa
+                            box-sizing border-box
+                            padding 10px 15px
+                            &.currentLyric
+                                color white
         .music-detail
             position absolute
             left 0
             top 0
-            bottom 0
+            bottom 110px
             right 0
             color white
             .music-name
@@ -449,10 +623,10 @@ export default {
                 padding 0 15px
                 margin-top 60px
                 text-align center
-                font-size 18px
+                font-size 16px
             .cover
                 position absolute
-                top 110px
+                top 130px
                 left 0
                 right 0
                 margin 0 auto
@@ -477,15 +651,29 @@ export default {
             .music-info
                 width 100%
                 position absolute
-                bottom 240px
+                bottom 40px
                 text-align center
-                font-size 16px
+                font-size 14px
                 color #ccc
                 .singer-ablum
-                    padding 0 15px
+                .currentTxt
+                    padding 10px 15px
+                .currentTxt
+                    font-size 16px
+                    color white
+            .proBar
+                position absolute
+                bottom 0
+                left 0
+                right 0
+                margin 0 auto 
+                padding 0 10px
+                // height 30px
+                // border 1px solid #eee
+                // border-radius 8px
         .controls
             position absolute 
-            bottom 35px
+            bottom 30px
             display flex
             width 100%
             height 60px
