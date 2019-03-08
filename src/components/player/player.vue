@@ -277,6 +277,7 @@ export default {
             getMusicUrlData(id).then(res => {
                 if(res && res.statusText === STATUS_TEXT){
                     this.musicUrl = res.data.data[0].url
+                    this.$refs.audio.play()                         //兼容canpaly无效
                 }
             })
         },

@@ -151,10 +151,10 @@ export default {
         },
         selectRecKeyword(e){               //点击搜索推荐
             if(!this.viewShow){            //在没有弹上时候点击搜索推荐则需要手动上弹
-                            this.viewShow = true
+                this.viewShow = true
                 setTimeout(() => {
                     this.$refs.viewContent.style.top = '55px'
-                },20)  //异步给时间渲染dom否则监听不到top，也就是改变top时display还是none到block的转化过程
+                },500)  //异步给时间渲染dom否则监听不到top，也就是改变top时display还是none到block的转化过程
             }
 
             var str = e.target.innerText
@@ -191,7 +191,7 @@ export default {
             this.listStatus = true      //渲染list及组件并延迟执行style否则报错
             this.recShow = false           //搜索时可以关闭推荐搜索
             setTimeout(() => {
-                this.$refs.viewContent.style.top = '-55px'
+                this.$refs.viewContent.style.top = '55px'
             },20)
             if(this.value){
                 setTimeout(() =>{
