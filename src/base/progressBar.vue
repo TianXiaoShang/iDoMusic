@@ -141,6 +141,13 @@ export default {
                     width 10px
                     height 10px
                     background $themeColor
+                    &:before
+                        content: ''
+                        position: absolute
+                        top: -10px
+                        left: -10px
+                        right: -10px
+                        bottom: -10px
         .current-time
         .duration-time
             padding 0 10px

@@ -388,6 +388,8 @@ export default {
         changePerc(e){                                            //拖动跳转歌词跟歌曲进度
             var timer = this.audioDur * e
             this.$refs.audio.currentTime = timer
+            this.$refs.audio.play()
+            this.playStatus = true
             // this.myLyric.seek(timer * 1000 | 0)  //跳转不了？？？？？？？？？？？？？
         },
         error(){                                                  //数据请求失败
@@ -578,7 +580,7 @@ export default {
             position absolute
             left 0
             top 0
-            bottom 110px
+            bottom 120px
             right 0
             color white
             .musicName 

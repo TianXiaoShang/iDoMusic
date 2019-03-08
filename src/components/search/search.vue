@@ -191,7 +191,7 @@ export default {
             this.listStatus = true      //渲染list及组件并延迟执行style否则报错
             this.recShow = false           //搜索时可以关闭推荐搜索
             setTimeout(() => {
-                this.$refs.viewContent.style.top = '55px'
+                this.$refs.viewContent.style.top = '-55px'
             },20)
             if(this.value){
                 setTimeout(() =>{
