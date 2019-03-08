@@ -5,7 +5,7 @@
             <Slider :params="bannerParams" :bannerData="bannerData" v-show="bannerData.length">
                 <div v-for="(item,index) in bannerData" :key="index">
                     <a :href="item.url">
-                        <img :src="item.imageUrl" @load="bannerImgLoad" alt="">
+                        <img :src="`${item.imageUrl}?param=400y145`" @load="bannerImgLoad" alt="">
                     </a>
                 </div>
             </Slider>
@@ -81,6 +81,8 @@ export default {
     },
     _getRecSongListData(){
       getRecSongListData().then(res => {
+        console.log(res)
+        
         if(res && res.statusText === STATUS_TEXT){
           this.recSongListData = this.creatGridData(res.data.result)
         }

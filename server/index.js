@@ -4,7 +4,7 @@ var globalConfig = require('./config')
 
 var app = new express()
 
-app.use('/', express.static(globalConfig.page_path))
+app.use('/', express.static(globalConfig.page_path,{maxAge:'1m'}))
 app.use('/api', proxy({
   target: 'http://localhost:3000',
   pathRewrite: {'/api': ''}

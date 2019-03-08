@@ -10,7 +10,7 @@
             @click="myClick(item.id)" 
             >
                 <div class="coverWrap">
-                    <img v-lazy="item.imageUrl" :key='item.imageUrl' alt="" class="cover">
+                    <img v-lazy="`${item.imageUrl}?param=140y140`" :key='item.imageUrl' alt="" class="cover">
                     <div class="filter"></div>
                     <div class="playCount" v-if="item.showPlayCount">
                         <img src="@/assets/playcount.png" alt="" class="picon">

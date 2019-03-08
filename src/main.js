@@ -8,7 +8,7 @@ import lazyLoad from "vue-lazyload"
 fastClick.attach(document.body)
 Vue.config.productionTip = false
 Vue.use(lazyLoad,{
-  loading: require('./assets/lazy.png'),
+  loading: require('./assets/lazy3.png'),
 })
 
 new Vue({

@@ -123,11 +123,11 @@ export default {
     },
     methods:{
         myFocus(e){                      //input聚焦上弹窗口
-            this.viewShow = true
-            setTimeout(() => {
-                this.$refs.viewContent.style.top = '55px'
-            },20)  //异步给时间渲染dom否则监听不到top，也就是改变top时display还是none到block的转化过程
-            this.$refs.navigationScroll.scrollTo(0,0,300)
+            // this.viewShow = true
+            // setTimeout(() => {
+                // this.$refs.viewContent.style.top = '55px'
+            // },20)  //异步给时间渲染dom否则监听不到top，也就是改变top时display还是none到block的转化过程
+            // this.$refs.navigationScroll.scrollTo(0,0,300)
             this.listStatus = true
         },
         myInput(e){                      //防抖监听input 
@@ -150,6 +150,13 @@ export default {
             // this.$router.push({path:'/recommend'})
         },
         selectRecKeyword(e){               //点击搜索推荐
+            if(!this.viewShow){            //在没有弹上时候点击搜索推荐则需要手动上弹
+                            this.viewShow = true
+                setTimeout(() => {
+                    this.$refs.viewContent.style.top = '55px'
+                },20)  //异步给时间渲染dom否则监听不到top，也就是改变top时display还是none到block的转化过程
+            }
+
             var str = e.target.innerText
             this.currentType = 0
             this.searchListData = []

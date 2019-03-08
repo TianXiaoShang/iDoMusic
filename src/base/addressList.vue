@@ -22,7 +22,7 @@
                         :key="index"
                         @click="onClick(item.id)"
                         >
-                            <img v-lazy="item.img1v1Url" :key="item.img1v1Url" alt="" class="coverImg">
+                            <img v-lazy="`${item.img1v1Url}?param=60y60`" :key="item.img1v1Url" alt="" class="coverImg">
                             <div class="item-name">{{item.name}}</div>
                         </div>
                     </div>
@@ -30,9 +30,9 @@
             </div>
         </my-scroll>
          <div class="letters-wrap" 
-         @touchstart="onTouchStart"
-         @touchmove="onTouchMovet"
-         @touchend="onTouchEnd"
+         @touchstart.stop.prevent="onTouchStart"
+         @touchmove.stop.prevent="onTouchMovet"
+         @touchend.stop.prevent="onTouchEnd"
          ref="lettersWrap"
          >
             <div 

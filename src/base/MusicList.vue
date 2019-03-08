@@ -6,7 +6,7 @@
                     <div class="title">{{MusicListTitle}}</div>
                     <div class="item" v-for="(item,index) in songsListData" :key="index" @click="onClick(item.id,item.type,index)">
                         <div v-if="item.imageUrl" class="cover-img">
-                            <img v-lazy="item.imageUrl" :key="item.imageUrl" alt="" class="item-img">
+                            <img v-lazy="`${item.imageUrl}?param=60y60`" :key="item.imageUrl" alt="" class="item-img">
                         </div>
                         <div class="info">
                             <div class="song-info">

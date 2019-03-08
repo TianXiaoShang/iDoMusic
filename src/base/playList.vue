@@ -13,18 +13,18 @@
                     :class="{active : index === currentIndex}"
                     ref="listItem"
                     class="history-item"
-                    @click.stop.prevent='mySelect'  
+                    @click='mySelect'  
                     v-for="(item, index) in playListData" 
                     :key="index"
                     >
                         <div class="item-name">{{item}}</div>
                         <img class="delete-icon" 
                         src='@/assets/delete.png' 
-                        @click.stop.prevent="myDelete(index)">
+                        @click="myDelete(index)">
                     </div>
                 </div>
+                <div class="noMore" v-show="!playListData.length">{{hint}}</div>
             </my-scroll>
-            <div class="noMore" v-show="!playListData.length">{{hint}}</div>
         </div>
     </div>
 </template>
@@ -125,9 +125,9 @@ export default {
                         padding 4px 0
                     .delete-icon
                         width 18px
-        .noMore
-            text-align center
-            padding 10px 0
-            color #bbb
-            font-size 15px
+            .noMore
+                text-align center
+                padding 10px 0
+                color #aaa
+                font-size 15px
 </style>

@@ -6,7 +6,7 @@
             v-show="showPlayer" 
             >
                 <div class="background-image">
-                    <img :style="{backgroundImage:`url(${musicData.imageUrl || miniUrl})`}" :key='musicData.imageUrl' alt="" class="bg-img">
+                    <img v-lazy="`${musicData.imageUrl}?param=800y800`" :key='musicData.imageUrl' alt="" class="bg-img">
                     <div class="bg-filter"></div>
                 </div>
                 //back区域
@@ -24,7 +24,7 @@
                         <div class="music-name">{{musicData.name}}</div>
                         <div class="cover">
                             <div class="border">
-                                <div :class="{play:playStatus == true,'play pause':playStatus == false}" :style="{backgroundImage:`url(${musicData.imageUrl || miniUrl})`}" :key='musicData.imageUrl' class="img"></div>
+                                <img :class="{play:playStatus == true,'play pause':playStatus == false}" v-lazy="`${musicData.imageUrl}?param=300y300`" :key='musicData.imageUrl' class="img">
                             </div>
                         </div>
                         <div class="music-info">
@@ -248,7 +248,6 @@ export default {
         },
         _initData(){                        //musicId改变，开始准备数据
             if(this.myLyric){               //有歌词的情况下首先清除上一曲的歌词
-            console.log('stop')
                 this.myLyric.stop()
                 this.myLyric = null             //先将上一次的歌词数据清除
                 this.currentTxt = ''
@@ -259,7 +258,7 @@ export default {
             var index = this.sequenceList.findIndex(item => {              //从列表中查找到当前歌曲的index
                 return item.id === this.musicId
             })
-            this.sequenceList.length && !this.sequenceList[index].imageUrl ? this._getMusiImage(this.musicId) : ''    //如果数据没有图片则获取图片url（search的数据没有img）
+            this.sequenceList.length &&  this._getMusiImage(this.musicId)     //这里主要获取图片url跟时长（search的数据没有img）
             this.musicData = this.sequenceList[index]    //先把歌曲详情渲染出来
             this._getMusicUrl(this.musicData.id)         //然后请求歌曲rul
             this._getMusicLyric(this.musicData.id)       //请求歌词
@@ -269,6 +268,7 @@ export default {
         _getMusiImage(id){
             getMusicDetailData(id).then(res => {
                 if(res && res.statusText === STATUS_TEXT){
+                    this.audioDur = res.data.songs[0].dt / 1000             //毫秒  =》 秒
                     this.musicData.imageUrl = res.data.songs[0].al.picUrl
                 }
             })
@@ -284,16 +284,16 @@ export default {
                 getMusicLyricData(id).then(res => {
                      if(res && res.statusText === STATUS_TEXT && res.data.lrc){
                          this.myLyric = new Lyric(res.data.lrc.lyric,this.handleLyric)
-                        //  if (this.playStatus) {        //控制歌词播放的条件
-                        //     this.myLyric.play()        //调用插件的play()方法，进行歌词播放
-                        // }
+                         if (this.playStatus) {        //控制歌词播放的条件
+                            this.myLyric.play()        //调用插件的play()方法，进行歌词播放
+                        }
                     }
                 })
         },
         handleLyric(ops){                                 //处理lyric派发的歌词函数
             this.currentTxt = ops.txt
             this.lineNum = ops.lineNum
-            console.log(ops)
+            // console.log(ops)
             var currentItem = this.$refs.lyricItem[this.lineNum - 4]   //歌词跳转到中间部分
             if(this.lineNum > 5){
                 this.$refs.lyricScroll.scrollToElement(currentItem,500,0,0)
@@ -378,7 +378,8 @@ export default {
         },
         canplay(){                                               //数据为可播放状态
             this.set_playStatus(true)
-            this.audioDur = this.$refs.audio.duration    //获取音乐长度
+            // this.audioDur = this.$refs.audio.duration    //获取音乐长度
+            // console.log(this.audioDur)
             this.$refs.audio.play()     
             if(this.myLyric){                                     //防止歌词请求比歌曲慢而报错
                 this.myLyric.play()                               //调用插件的play()方法，进行歌词播放
@@ -387,10 +388,10 @@ export default {
         changePerc(e){                                            //拖动跳转歌词跟歌曲进度
             var timer = this.audioDur * e
             this.$refs.audio.currentTime = timer
-            this.myLyric.seek(timer * 1000 | 0)  //跳转不了？？？？？？？？？？？？？
+            // this.myLyric.seek(timer * 1000 | 0)  //跳转不了？？？？？？？？？？？？？
         },
         error(){                                                  //数据请求失败
-            console.log('error')
+            // console.log('error')
             // this.playNext()
         },
         timeupdate(e){                                            //播放进度更新，获取当前播放进度
@@ -413,7 +414,6 @@ export default {
         myShowPlayList(){
             this.showPlayList = !this.showPlayList
             if(!this.playList.length){
-                console.log('kongle')
                 return
             }
             setTimeout(() => this.playListScrollTo() ,20)
@@ -440,11 +440,11 @@ export default {
 
         clearPlayList(){         //清除播放列表，停止播放，同时关闭播放器
             this.set_playList([])
+            this.currentTxt = ''
             this.musicUrl = ''
             this.backClick()
             this.set_playStatus(false)
             this.musicData = {}
-            this.currentTxt = ''
         },
         deletePlayList(index){              //通过index找到name,通过name查找到id。随后删除后的这个保存id
             var musicName = this.showPlayListData[index]
@@ -478,7 +478,6 @@ export default {
         },
 
         onTouchStart(e){
-            console.log(e)
             if(Object.keys(this.musicData).length){
                 this.firstX = e.changedTouches[0].pageX
             }
@@ -531,9 +530,9 @@ export default {
                 right 0
                 // background linear-gradient(to bottom, rgba(99,64,74,0.8) 0%,rgba(99,64,74,0.6) 20%,rgba(99,64,74,0.7) 40%,rgba(99,64,74,0.85) 50%,rgba(99,64,74,0.95) 70%,rgba(99,64,74,1) 100%);
             .bg-img
-                width 100%
                 height 100%
                 position absolute
+                left -40%
                 background-size cover
                 background-position 50% 0%
                 // transform translate(-50%)
@@ -635,18 +634,23 @@ export default {
                 right 0
                 margin 0 auto
                 width 65%
+                border-radius 50%
+                overflow hidden
+                border 8px solid rgba(200,200,200,0.3)
                 .border
+                    position relative
                     box-sizing border-box
                     width 100%
-                    border-radius 50%
-                    border 8px solid rgba(200,200,200,0.3)
-                    overflow hidden
+                    height 0
+                    padding-bottom 100%
+                    background-image url('../../assets/lazy3.png')
+                    background-size cover
                     .img
-                        padding-bottom 100%
-                        height 0
+                        position absolute
+                        top 0
+                        display block
+                        bottom 0
                         width 100%
-                        background-image url('../../assets/lazy3.png')
-                        background-size cover
                         &.play
                             animation rotate 20s linear infinite
                             //cd暂停功能的实现
