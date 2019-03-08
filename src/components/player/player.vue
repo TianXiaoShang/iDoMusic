@@ -19,8 +19,8 @@
                 //player首页
                 <transition :name="myShowPage">
                     <div class="music-detail" v-show="showPage"
-                    @touchstart.prevent="onTouchStart"
-                    @touchend.prevent="onTouchEnd">
+                    @touchstart="onTouchStart"
+                    @touchend="onTouchEnd">
                         <div class="music-name">{{musicData.name}}</div>
                         <div class="cover">
                             <div class="border">
@@ -40,8 +40,8 @@
                 //player歌词页
                 <transition :name="myShowPage" >
                     <div class="music-lysic" v-show="!showPage"
-                    @touchstart.prevent="onTouchStart"
-                    @touchend.prevent="onTouchEnd">
+                    @touchstart="onTouchStart"
+                    @touchend="onTouchEnd">
                         <div class="musicName">{{musicData.name}}</div>
                         <div class="lyricHint" v-if="!myLyric">未找到歌词哦~~~</div>
                         <my-scroll class='lyricScroll' ref="lyricScroll">
@@ -277,7 +277,9 @@ export default {
             getMusicUrlData(id).then(res => {
                 if(res && res.statusText === STATUS_TEXT){
                     this.musicUrl = res.data.data[0].url
-                    this.$refs.audio.play()                         //兼容canpaly无效
+                    setTimeout(() =>{
+                        this.$refs.audio.play()                         //强行兼容canpaly无效
+                    },100)
                 }
             })
         },

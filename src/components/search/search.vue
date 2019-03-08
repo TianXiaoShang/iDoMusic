@@ -150,12 +150,10 @@ export default {
             // this.$router.push({path:'/recommend'})
         },
         selectRecKeyword(e){               //点击搜索推荐
-            if(!this.viewShow){            //在没有弹上时候点击搜索推荐则需要手动上弹
-                this.viewShow = true
-                setTimeout(() => {
-                    this.$refs.viewContent.style.top = '55px'
-                },500)  //异步给时间渲染dom否则监听不到top，也就是改变top时display还是none到block的转化过程
-            }
+            this.viewShow = true
+            setTimeout(() => {
+                this.$refs.viewContent.style.top = '55px'
+            },300)  //键盘下滑的时间。
 
             var str = e.target.innerText
             this.currentType = 0
@@ -324,6 +322,7 @@ export default {
             height 44px
             padding-top 6px
             align-items center
+            background white
             .logo
                 margin 0 14px
                 width 60px
