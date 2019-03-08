@@ -40,11 +40,6 @@ export default {
         hint:String,
         currentIndex:Number
     },
-    watch:{
-        currentIndex(newData){
-            console.log(newData)
-        }
-    },
     data(){
         return {
             // currentIndex: '',

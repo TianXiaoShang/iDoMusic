@@ -74,7 +74,7 @@ export default {
   methods: {
     _getBannerData() {
       getBannerData().then(res => {
-        console.log(res)
+        // console.log(res)
         if (res && res.statusText === STATUS_TEXT) {
           this.bannerData = res.data.banners;
         }
@@ -82,7 +82,7 @@ export default {
     },
     _getRecSongListData(){
       getRecSongListData().then(res => {
-        console.log(res)
+        // console.log(res)
         
         if(res && res.statusText === STATUS_TEXT){
           this.recSongListData = this.creatGridData(res.data.result)

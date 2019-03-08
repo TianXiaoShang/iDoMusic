@@ -153,7 +153,7 @@ export default {
             this.viewShow = true
             setTimeout(() => {
                 this.$refs.viewContent.style.top = '55px'
-            },400)  //键盘下滑的时间。
+            },500)  //键盘下滑的时间。
 
             var str = e.target.innerText
             this.currentType = 0
@@ -275,7 +275,6 @@ export default {
                 })
         },
         myDeleteHistory(index){               //删除某条搜索历史
-        console.log(1212)
             this.searchHistoryData = deleteSearchHistory(index)
         },
         myClearHistory(){           //清除全部搜索历史

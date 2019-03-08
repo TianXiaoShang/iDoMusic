@@ -350,7 +350,6 @@ export default {
                     return true
                 }
             })
-            console.log(currentIndex)
             this.myPlayListCurrentIndex = currentIndex
             // this.$refs.myPlayList.scrollToElement(currentIndex)
         },
