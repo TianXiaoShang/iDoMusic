@@ -4,8 +4,7 @@
             <div 
             class="player" 
             v-show="showPlayer" 
-            @touchstart.prevent="onTouchStart"
-            @touchend.prevent="onTouchEnd">
+            >
                 <div class="background-image">
                     <img :style="{backgroundImage:`url(${musicData.imageUrl || miniUrl})`}" :key='musicData.imageUrl' alt="" class="bg-img">
                     <div class="bg-filter"></div>
@@ -19,7 +18,9 @@
                 
                 //player首页
                 <transition :name="myShowPage">
-                    <div class="music-detail" v-show="showPage">
+                    <div class="music-detail" v-show="showPage"
+                    @touchstart.prevent="onTouchStart"
+                    @touchend.prevent="onTouchEnd">
                         <div class="music-name">{{musicData.name}}</div>
                         <div class="cover">
                             <div class="border">
@@ -37,8 +38,10 @@
                 </transition>
 
                 //player歌词页
-                <transition :name="myShowPage">
-                    <div class="music-lysic" v-show="!showPage">
+                <transition :name="myShowPage" >
+                    <div class="music-lysic" v-show="!showPage"
+                    @touchstart.prevent="onTouchStart"
+                    @touchend.prevent="onTouchEnd">
                         <div class="musicName">{{musicData.name}}</div>
                         <div class="lyricHint" v-if="!myLyric">未找到歌词哦~~~</div>
                         <my-scroll class='lyricScroll' ref="lyricScroll">
@@ -475,6 +478,7 @@ export default {
         },
 
         onTouchStart(e){
+            console.log(e)
             if(Object.keys(this.musicData).length){
                 this.firstX = e.changedTouches[0].pageX
             }
