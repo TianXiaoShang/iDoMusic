@@ -81,14 +81,15 @@
                     class="clear-icon" 
                     @click="clearPlayList">
                 </div>
-                <div class="contentWrap">
+                <my-scroll :data="showPlayListData" class="contentWrap">
                     <play-list
                     ref="myPlayList" 
+                    :currentIndex="myPlayListCurrentIndex"
                     :hint="hint"
                     :playListData="showPlayListData" 
                     @myDelete="deletePlayList"
                     @mySelect="selectPlayList"></play-list>
-                </div>
+                </my-scroll>
             </div>
         </transition>
         <transition name="fullPlayer">
@@ -151,6 +152,7 @@ export default {
     name:'Player',
     data(){
       return {
+          myPlayListCurrentIndex:-1,
           musicData:{},
           miniUrl:"url('../../assets/BgImage1.png')",   //手动lazy的旋转CD图
           miniUrl2:'@/assets/BgImage1.png',
@@ -348,7 +350,9 @@ export default {
                     return true
                 }
             })
-            this.$refs.myPlayList.scrollToElement(currentIndex)
+            console.log(currentIndex)
+            this.myPlayListCurrentIndex = currentIndex
+            // this.$refs.myPlayList.scrollToElement(currentIndex)
         },
         
         playPrevious(){            //上一曲
@@ -493,6 +497,15 @@ export default {
                 this.offsetX = this.lastX - this.firstX
             }
         },
+        // scrollToElement(index){
+        //     this.currentIndex = index
+        //     setTimeout(() => {
+        //         if(this.$refs.listItem){
+        //             var currentMusic = this.$refs.listItem[index]
+        //             this.$refs.myScroll.scrollToElement(currentMusic,250,0,-143)
+        //         }
+        //     },20)
+        // }
     }
 }
 </script>

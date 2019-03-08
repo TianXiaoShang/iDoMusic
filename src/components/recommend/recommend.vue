@@ -74,6 +74,7 @@ export default {
   methods: {
     _getBannerData() {
       getBannerData().then(res => {
+        console.log(res)
         if (res && res.statusText === STATUS_TEXT) {
           this.bannerData = res.data.banners;
         }

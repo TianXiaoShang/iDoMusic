@@ -153,7 +153,7 @@ export default {
             this.viewShow = true
             setTimeout(() => {
                 this.$refs.viewContent.style.top = '55px'
-            },300)  //键盘下滑的时间。
+            },400)  //键盘下滑的时间。
 
             var str = e.target.innerText
             this.currentType = 0
