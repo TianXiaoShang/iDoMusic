@@ -97,7 +97,7 @@
                 <img :class="{play:playStatus == true,'play pause':playStatus == false}" :src="musicData.imageUrl" alt="" class="miniImg">
                 <div class="miniInfo">
                     <div class="miniName">{{musicData.name || '快跟iDo浪起来'}}</div>
-                    <div class="miniAblum">{{musicData.album}}</div>
+                    <div class="miniAblum">{{currentTxt || musicData.album}}</div>
                 </div>
                 <img @click.stop="changePlayStatus" v-show="!this.playStatus" src="@/assets/play2.png" alt="" class="miniPlay">
                 <img @click.stop="changePlayStatus" v-show="this.playStatus" src="@/assets/pause2.png" alt="" class="miniPlay">
@@ -259,6 +259,7 @@ export default {
                 this.audioDur = 0
                 this.currentTime = 0
             }
+            this.set_playStatus(true)
             this.showPage = true            //切歌后不返回歌词页
             this.$refs.audio.pause()        //数据请求完之前先暂停之前歌曲
             var index = this.sequenceList.findIndex(item => {              //从列表中查找到当前歌曲的index
@@ -284,9 +285,9 @@ export default {
                 if(res && res.statusText === STATUS_TEXT){
                     this.musicUrl = res.data.data[0].url
                     setTimeout(() =>{
-                        if(!this.lyricLock){
-                            this.changePlayStatus()
-                            this.changePlayStatus()
+                        if(this.playStatus && !this.lyricLock){
+                            this.$refs.audio.play()
+                            this.set_playStatus(true)
                         }                   //强行兼容canpaly无效,手动模拟两次点击
                     },3000)                 //三秒后还未播放将尝试手动播放
                 }
@@ -323,7 +324,7 @@ export default {
             }else{
                 this.$refs.audio.play()
             }
-            this.myLyric.togglePlay()                    //歌词的暂停/播放，将俩联合在一起
+            this.myLyric && this.myLyric.togglePlay()                    //歌词的暂停/播放，将俩联合在一起
             this.set_playStatus(!this.playStatus)
         },
         changeMode(){                                    //切换播放模式
@@ -389,24 +390,25 @@ export default {
             return false
         },
         canplay(){                                               //数据为可播放状态
-
-            this.set_playStatus(true)
             // this.audioDur = this.$refs.audio.duration    //获取音乐长度
             // console.log(this.audioDur)
-            this.$refs.audio.play()     
+            if(this.playStatus){
+                this.$refs.audio.play()     
+                this.lyricLock = true;
+                this.myLyric && this.myLyric.seek(this.$refs.audio.currentTime * 1000)    //如果歌词先请求回来了。那就在可以播放时播放歌词
+            }
             // if(this.myLyric){                                     //防止歌词请求比歌曲慢而报错
                 // this.myLyric.play()                               //调用插件的play()方法，进行歌词播放
                 // console.log(1212)
             // }
-            this.lyricLock = true;
-            this.myLyric.seek(this.$refs.audio.currentTime * 1000)    //如果歌词先请求回来了。那就在可以播放时播放歌词
+            
         },
         changePerc(e){                                            //拖动跳转歌词跟歌曲进度
             var timer = this.audioDur * e
             this.$refs.audio.currentTime = timer
             this.$refs.audio.play()
             this.set_playStatus(true)
-            this.myLyric.seek(this.$refs.audio.currentTime * 1000)  //跳转不了？？？？？？？？？？？？？
+            this.myLyric.seek(this.$refs.audio.currentTime * 1000)  //跳转 
         },
         error(){                                                  //数据请求失败
             console.log('error')
@@ -417,7 +419,7 @@ export default {
             if(!this.timer){                 //节流处理
                 this.timer = true
                 setTimeout(() => {
-                    his.lyricLock && this.myLyric && this.playStatus && this.myLyric.seek(e.target.currentTime * 1000 | 0)  //跳转不了？？？？？？？？？？？？？
+                    this.lyricLock && this.myLyric && this.playStatus && this.myLyric.seek(this.$refs.audio.currentTime * 1000)  //跳转不了？？？？？？？？？？？？？
                     this.timer = false    //开始下一次计时
                 },20)
             }
@@ -799,7 +801,7 @@ export default {
                 overflow hidden
                 text-overflow ellipsis
             .miniAblum 
-                color #aaa
+                color #888
                 font-size 12px
         .miniPlay
             width 45px
