@@ -283,9 +283,9 @@ export default {
             getMusicUrlData(id).then(res => {
                 if(res && res.statusText === STATUS_TEXT){
                     this.musicUrl = res.data.data[0].url
-                    // setTimeout(() =>{
-                    //     this.canplay()                         //强行兼容canpaly无效
-                    // },5000)
+                    setTimeout(() =>{
+                        !this.lyricLock && this.canplay()  //强行兼容canpaly无效
+                    },3000)   //三秒后还未播放将尝试手动播放
                 }
             })
         },
@@ -416,7 +416,7 @@ export default {
             if(!this.timer){                 //节流处理
                 this.timer = true
                 setTimeout(() => {
-                    this.myLyric && this.playStatus && this.myLyric.seek(e.target.currentTime * 1000 | 0)  //跳转不了？？？？？？？？？？？？？
+                    his.lyricLock && this.myLyric && this.playStatus && this.myLyric.seek(e.target.currentTime * 1000 | 0)  //跳转不了？？？？？？？？？？？？？
                     this.timer = false    //开始下一次计时
                 },20)
             }
