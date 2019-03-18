@@ -155,7 +155,7 @@ export default {
             // setTimeout(() => {
             //     this.$refs.viewContent.style.top = '55px'
             // },500)  //键盘下滑的时间。
-
+            this.$refs.searchInput.blur()   //让键盘下滑
             var str = e.target.innerText
             this.currentType = 0
             this.searchListData = []
