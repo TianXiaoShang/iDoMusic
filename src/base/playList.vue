@@ -17,7 +17,7 @@
                     v-for="(item, index) in playListData" 
                     :key="index"
                     >
-                        <div class="item-name">{{item}}</div>
+                        <div class="item-name" :key="item">{{item}}</div>
                         <img class="delete-icon" 
                         src='@/assets/delete.png' 
                         @click.stop="myDelete(index)">

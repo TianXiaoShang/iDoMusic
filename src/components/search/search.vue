@@ -123,11 +123,11 @@ export default {
     },
     methods:{
         myFocus(e){                      //input聚焦上弹窗口
-            // this.viewShow = true
-            // setTimeout(() => {
-                // this.$refs.viewContent.style.top = '55px'
-            // },20)  //异步给时间渲染dom否则监听不到top，也就是改变top时display还是none到block的转化过程
-            // this.$refs.navigationScroll.scrollTo(0,0,300)
+            this.viewShow = true
+            setTimeout(() => {
+                this.$refs.viewContent.style.top = '55px'
+            },20)  //异步给时间渲染dom否则监听不到top，也就是改变top时display还是none到block的转化过程
+            this.$refs.navigationScroll.scrollTo(0,0,300)
             this.listStatus = true
         },
         myInput(e){                      //防抖监听input 
@@ -150,10 +150,10 @@ export default {
             // this.$router.push({path:'/recommend'})
         },
         selectRecKeyword(e){               //点击搜索推荐
-            this.viewShow = true
-            setTimeout(() => {
-                this.$refs.viewContent.style.top = '55px'
-            },500)  //键盘下滑的时间。
+            // this.viewShow = true
+            // setTimeout(() => {
+            //     this.$refs.viewContent.style.top = '55px'
+            // },500)  //键盘下滑的时间。
 
             var str = e.target.innerText
             this.currentType = 0
@@ -177,7 +177,6 @@ export default {
                 return 
             }  
             this._getSearchData()
-
             // this.$router.push({
             //     params:{type:this.searchTypes[e]},
             //     path:'/searchtypes' + this.searchTypes[e],
@@ -302,9 +301,9 @@ export default {
     },
     mounted(){
         this._initHeight()
-        window.addEventListener('resize', () => {      //监听resize事件，屏幕尺寸变化时候触发，从而重新初始化
-             this._initHeight()
-        })
+        // window.addEventListener('resize', () => {      //监听resize事件，屏幕尺寸变化时候触发，从而重新初始化
+            //  this._initHeight()
+        // })
     }
 }
 </script>

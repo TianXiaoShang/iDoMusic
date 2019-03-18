@@ -29,7 +29,7 @@
                         </div>
                         <div class="music-info">
                             <div class="singer-ablum">{{musicData.album}}</div>
-                            <div class="currentTxt">{{currentTxt}}</div>
+                            <div v-if="Object.keys(this.musicData).length" class="currentTxt">{{currentTxt}}</div>
                         </div>
                         <div class="proBar" v-if="Object.keys(this.musicData).length">
                             <progress-bar @changePerc="changePerc" :currentTime="currentTime" :audioDur="audioDur" :percentage="percentage"></progress-bar>
@@ -206,7 +206,7 @@ export default {
             if(newVal < 0 && Math.abs(newVal) > 100){
                 this.myShowPage = 'showPageRight'
                 this.showPage = !this.showPage
-                var currentItem = this.$refs.lyricItem[this.lineNum - 4]     //歌词跳转到中间部分
+                var currentItem = this.lineNum ? this.$refs.lyricItem[this.lineNum - 4] : ''     //歌词跳转到中间部分
                 this.$refs.lyricScroll.scrollToElement(currentItem,500,0,0)
 
             }else if(newVal > 0 && Math.abs(newVal) > 100){
@@ -254,6 +254,8 @@ export default {
                 this.myLyric = null             //先将上一次的歌词数据清除
                 this.currentTxt = ''
                 this.lineNum = 0
+                this.audioDur = 0
+                this.currentTime = 0
             }
             this.showPage = true            //切歌后不返回歌词页
             this.$refs.audio.pause()        //数据请求完之前先暂停之前歌曲
@@ -279,18 +281,20 @@ export default {
             getMusicUrlData(id).then(res => {
                 if(res && res.statusText === STATUS_TEXT){
                     this.musicUrl = res.data.data[0].url
-                    setTimeout(() =>{
-                        this.$refs.audio.play()                         //强行兼容canpaly无效
-                    },100)
+                    // setTimeout(() =>{
+                    //     this.$refs.audio.play()                         //强行兼容canpaly无效
+                    // },5000)
                 }
             })
         },
         _getMusicLyric(id){
                 getMusicLyricData(id).then(res => {
                      if(res && res.statusText === STATUS_TEXT && res.data.lrc){
+                         console.log(res.data.lrc.lyric)
                          this.myLyric = new Lyric(res.data.lrc.lyric,this.handleLyric)
                          if (this.playStatus) {        //控制歌词播放的条件
                             this.myLyric.play()        //调用插件的play()方法，进行歌词播放
+                            this.myLyric.seek(this.$refs.audio.currentTime * 1000)
                         }
                     }
                 })
@@ -299,7 +303,7 @@ export default {
             this.currentTxt = ops.txt
             this.lineNum = ops.lineNum
             // console.log(ops)
-            var currentItem = this.$refs.lyricItem[this.lineNum - 4]   //歌词跳转到中间部分
+            var currentItem = this.lineNum ? this.$refs.lyricItem[this.lineNum - 4] : ''  //歌词跳转到中间部分
             if(this.lineNum > 5){
                 this.$refs.lyricScroll.scrollToElement(currentItem,500,0,0)
             }else{
@@ -328,8 +332,6 @@ export default {
         
         playNext(){                     //下一曲
             var index = this.currentIndex
-            this.audioDur = 0
-            this.currentTime = 0
             // this.set_playStatus(true)    //切换曲目都自动改成播放状态
             if(this.currentIndex === this.sequenceList.length -1){
                 this.set_currentIndex(0)
@@ -387,16 +389,18 @@ export default {
             // this.audioDur = this.$refs.audio.duration    //获取音乐长度
             // console.log(this.audioDur)
             this.$refs.audio.play()     
-            if(this.myLyric){                                     //防止歌词请求比歌曲慢而报错
-                this.myLyric.play()                               //调用插件的play()方法，进行歌词播放
-            }
+            // if(this.myLyric){                                     //防止歌词请求比歌曲慢而报错
+                // this.myLyric.play()                               //调用插件的play()方法，进行歌词播放
+                // console.log(1212)
+            // }
+            this.myLyric.seek(this.$refs.audio.currentTime * 1000)
         },
         changePerc(e){                                            //拖动跳转歌词跟歌曲进度
             var timer = this.audioDur * e
             this.$refs.audio.currentTime = timer
             this.$refs.audio.play()
-            this.playStatus = true
-            // this.myLyric.seek(timer * 1000 | 0)  //跳转不了？？？？？？？？？？？？？
+            this.set_playStatus(true)
+            this.myLyric.seek(this.$refs.audio.currentTime * 1000)  //跳转不了？？？？？？？？？？？？？
         },
         error(){                                                  //数据请求失败
             // console.log('error')
@@ -492,6 +496,7 @@ export default {
         },
         onTouchEnd(e){
             if(Object.keys(this.musicData).length){
+                console.log(11)
                 this.lastX = e.changedTouches[0].pageX
                 this.offsetX = this.lastX - this.firstX
             }

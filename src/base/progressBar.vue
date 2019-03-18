@@ -47,6 +47,10 @@ export default {
                 this.myCurrentTime = newVal                           //避免直接修改props的值，会报错
                 this.percentage = newVal / this.audioDur
             }
+            if(newVal === 0){                                          //切歌时候手动归零
+                this.percentage = 0;
+                this.$refs.palyed.style.width = '0px'
+            }
         },
         playedBarWidth(newVal){                                        //拖动使得进度改变时候自动改变百分比跟当前时间
             this.$refs.palyed.style.width = `${this.playedBarWidth}px`
