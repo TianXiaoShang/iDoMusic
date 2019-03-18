@@ -284,18 +284,20 @@ export default {
                 if(res && res.statusText === STATUS_TEXT){
                     this.musicUrl = res.data.data[0].url
                     setTimeout(() =>{
-                        !this.lyricLock && this.canplay()  //强行兼容canpaly无效
-                    },3000)   //三秒后还未播放将尝试手动播放
+                        if(!this.lyricLock){
+                            this.changePlayStatus()
+                            this.changePlayStatus()
+                        }                   //强行兼容canpaly无效,手动模拟两次点击
+                    },3000)                 //三秒后还未播放将尝试手动播放
                 }
             })
         },
         _getMusicLyric(id){
                 getMusicLyricData(id).then(res => {
                      if(res && res.statusText === STATUS_TEXT && res.data.lrc){
-                         console.log(res.data.lrc.lyric)
                          this.myLyric = new Lyric(res.data.lrc.lyric,this.handleLyric)
+                         this.myLyric.stop()    //首先初始化为stop
                          if (this.playStatus && this.lyricLock) {        //如果歌曲慢请求回来将等待,如果歌曲已开始播放，则直接跳转到对应的位置。
-                            this.myLyric.play()                          //调用插件的play()方法，进行歌词播放
                             this.myLyric.seek(this.$refs.audio.currentTime * 1000)    //主要用于在歌词请求过慢时纠正位置
                         }
                     }
@@ -321,7 +323,6 @@ export default {
             }else{
                 this.$refs.audio.play()
             }
-            console.log("????")
             this.myLyric.togglePlay()                    //歌词的暂停/播放，将俩联合在一起
             this.set_playStatus(!this.playStatus)
         },
@@ -388,6 +389,7 @@ export default {
             return false
         },
         canplay(){                                               //数据为可播放状态
+
             this.set_playStatus(true)
             // this.audioDur = this.$refs.audio.duration    //获取音乐长度
             // console.log(this.audioDur)
@@ -397,7 +399,6 @@ export default {
                 // console.log(1212)
             // }
             this.lyricLock = true;
-            console.log('canplay')
             this.myLyric.seek(this.$refs.audio.currentTime * 1000)    //如果歌词先请求回来了。那就在可以播放时播放歌词
         },
         changePerc(e){                                            //拖动跳转歌词跟歌曲进度
