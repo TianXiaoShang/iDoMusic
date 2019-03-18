@@ -351,7 +351,7 @@ export default {
             z-index 988
             background rgba(250,250,250,1)
             border-radius 15px 15px 0 0
-            transition top 0.4s
+            transition top 0.3s
             .close
                 position absolute 
                 right 15px
