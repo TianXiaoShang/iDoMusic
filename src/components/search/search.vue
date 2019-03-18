@@ -6,6 +6,7 @@
             <img class="logo" src="@/assets/logo.png"/>
             <div class="input">
                 <input 
+                ref="searchInput"
                 class="searchInput"  
                 placeholder="搜索歌曲 / 歌手 / 歌单"
                 v-model='value'
@@ -219,6 +220,7 @@ export default {
             })
         },
         selectTarget(ops){
+            this.$refs.searchInput.blur()    
             if(ops.type != 'Song'){
                  this.$router.push({
                     name:'songListPage',
