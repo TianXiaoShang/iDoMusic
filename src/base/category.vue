@@ -41,6 +41,7 @@ export default {
         this.changeType()
     },
     activated(){
+        console.log(document.getElementById('app'))
         document.getElementById('app').addEventListener('touchstart',this.isClickOut)    //用于判断点击区域绑定全局touchstart事件，更改chlidrens状态
     },
     deactivated(){
@@ -89,6 +90,7 @@ export default {
                 if (e.message !== 'StopIteration')  throw e
                 return          
             }
+            console.log(13)
             this.fatherShow = this.oldFaterShow     //在切出时，切回父级之前样式
             this.typeShow = false    //如果包含this.$refs.cateGoryWrap则在上方return,否则赋值false隐藏
         }
