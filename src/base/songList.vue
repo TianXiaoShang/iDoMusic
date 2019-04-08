@@ -87,7 +87,8 @@ export default {
             display inline-block
             box-sizing border-box
             margin 2px 1% 6px 1%
-            overflow hidden
+            vertical-align top
+            // overflow hidden
             .coverWrap
                 position relative
                 width 100%
