@@ -102,7 +102,6 @@ export default {
                 this.fixStr = this.addressListData[0].typeStr
                 this.$refs.myScroll.scrollTo(0,0,0,'easing')
                 },20)        //计算高度数组，用于判断滚动到某个位置同步右侧字母
-            
             // this.scrollTo(this.currentIndex) 
         }
     },
@@ -229,7 +228,7 @@ export default {
                             margin-left 15px
                             font-size 14px
     .letters-wrap
-        padding 15px 0
+        padding 10px 0
         background #ddd
         opacity 0.9
         position absolute 
