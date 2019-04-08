@@ -41,10 +41,10 @@ export default {
         this.changeType()
     },
     activated(){
-        document.addEventListener('touchstart',this.isClickOut)    //用于判断点击区域绑定全局touchstart事件，更改chlidrens状态
+        document.getElementById('app').addEventListener('touchstart',this.isClickOut)    //用于判断点击区域绑定全局touchstart事件，更改chlidrens状态
     },
     deactivated(){
-        document.removeEventListener('touchstart',this.isClickOut)    //用于判断点击区域绑定全局touchstart事件，更改chlidrens状态
+        document.getElementById('app').removeEventListener('touchstart',this.isClickOut)    //用于判断点击区域绑定全局touchstart事件，更改chlidrens状态
     },
     // beforeDestroy() {
     //     console.log('111')
@@ -99,7 +99,6 @@ export default {
 <style scoped lang="stylus">
 @import "~common/styles/variable"
     .category
-        cursor pointer
         box-sizing border-box
         height 40px
         width 100%
@@ -120,7 +119,6 @@ export default {
                 border-radius 6px 6px 0 0 
                 color $themeColor
     .childerns
-        cursor pointer
         position absolute
         z-index 999
         width 100%
