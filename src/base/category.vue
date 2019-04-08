@@ -42,7 +42,7 @@ export default {
         this.changeType()
     },
     activated(){
-        document.addEventListener('touchstart',function (e){this.isClickOut(e,this)})    //用于判断点击区域绑定全局touchstart事件，更改chlidrens状态
+        document.addEventListener('touchstart',this.isClickOut)    //用于判断点击区域绑定全局touchstart事件，更改chlidrens状态
     },
     deactivated(){
         document.removeEventListener('touchstart',this.isClickOut)    //用于判断点击区域绑定全局touchstart事件，更改chlidrens状态
@@ -79,8 +79,7 @@ export default {
                 resourceType,  //当前标签标识ID
             })
         },
-        isClickOut(e,a){
-            var self = a
+        isClickOut(e){
             // try{
             //     e.path.forEach(item => {
             //         if(item == this.$refs.cateGoryWrap){
@@ -93,13 +92,13 @@ export default {
             // }
             var flag = true
             e.path.forEach(item => {
-                if(item == self.$refs.cateGoryWrap){
+                if(item == this.$refs.cateGoryWrap){
                     flag = false
                 }
             })  
             if(flag){
-                self.fatherShow = self.oldFaterShow     //在切出时，切回父级之前样式
-                self.typeShow = false    //如果包含this.$refs.cateGoryWrap则在上方return,否则赋值false隐藏
+                this.fatherShow = this.oldFaterShow     //在切出时，切回父级之前样式
+                this.typeShow = false    //如果包含this.$refs.cateGoryWrap则在上方return,否则赋值false隐藏
             }
         }
     }
