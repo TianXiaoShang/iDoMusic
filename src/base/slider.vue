@@ -151,6 +151,7 @@ export default {
         overflow: hidden
         .slider-group
             overflow hidden
+            // border-radius 10px
             white-space nowrap
             .slider-item
                 float: left
@@ -158,11 +159,13 @@ export default {
                 overflow: hidden
                 text-align: center
                 width 398px
+                // border-radius 10px
                 a
                     display: block
                     width: 100%
                     overflow: hidden
                     text-decoration: none
+                    // border-radius 10px
                     img
                         display: block 
                         width: 100%

@@ -51,6 +51,11 @@ export default {
   *
     margin 0
     padding 0
+    
+  body
+      position relative
+      overflow-y hidden
+
     #app
       position fixed
       top 0

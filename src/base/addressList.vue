@@ -58,7 +58,7 @@ import myScroll from "base/myScroll"
 import {getData} from 'common/js/dom'
 import loading from 'base/loading'
 
-const ANCHOR_HEIGHT = 18    //单个字母高度
+const ANCHOR_HEIGHT = 17    //单个字母高度
 const TYPENAME_HEIGHT = 30  // fixLetter高度 
 
 export default {
@@ -239,8 +239,9 @@ export default {
         z-index 500
         .letterStr
             box-sizing border-box
-            height 18px
+            height 17px
             font-size 12px 
+            text-align center
             padding 1px 3px 1px 4.5px
             &.active
                 color $themeColor 
