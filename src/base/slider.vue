@@ -163,13 +163,11 @@ export default {
                     width: 100%
                     overflow: hidden
                     text-decoration: none
-                    -webkit-backface-visibility: hidden;
-                    -moz-backface-visibility: hidden;
-                    -webkit-transform: translate3d(0, 0, 0);
-                    -moz-transform: translate3d(0, 0, 0);
                     img
                         display: block 
                         width: 100%
+                        border-radius 10px
+                        -webkit-appearance none 
         .dots
             position absolute 
             left 50%

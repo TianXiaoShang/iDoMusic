@@ -681,16 +681,13 @@ export default {
                     padding-bottom 100%
                     background-image url('../../assets/lazy3.png')
                     background-size cover
-                    -webkit-backface-visibility: hidden;
-                    -moz-backface-visibility: hidden;
-                    -webkit-transform: translate3d(0, 0, 0);
-                    -moz-transform: translate3d(0, 0, 0);
                     .img
                         position absolute
                         top 0
                         display block
                         bottom 0
                         width 100%
+                        border-radius 50%
                         &.play
                             animation rotate 20s linear infinite
                             //cd暂停功能的实现
