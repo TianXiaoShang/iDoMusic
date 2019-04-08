@@ -678,6 +678,7 @@ export default {
                     position relative
                     box-sizing border-box
                     width 100%
+                    -webkit-appearance:none    //解决ios圆角失效问题
                     height 0
                     padding-bottom 100%
                     background-image url('../../assets/lazy3.png')
@@ -685,6 +686,7 @@ export default {
                     .img
                         position absolute
                         top 0
+                        -webkit-appearance:none    //解决ios圆角失效问题
                         display block
                         bottom 0
                         width 100%

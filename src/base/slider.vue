@@ -158,12 +158,15 @@ export default {
                 overflow: hidden
                 text-align: center
                 width 398px
+                -webkit-appearance:none    //解决ios圆角失效问题
                 a
                     display: block
                     width: 100%
                     overflow: hidden
                     text-decoration: none
+                    -webkit-appearance:none    //解决ios圆角失效问题
                     img
+                        -webkit-appearance:none    //解决ios圆角失效问题
                         display: block 
                         width: 100%
         .dots
