@@ -6,7 +6,6 @@
             :class="{active : item.fatherNum == fatherShow}" 
             v-for="(item, index) in categoryData.fathers" 
             :key="index" 
-            data-myyIndex="111"
             @click="changeFather(item.fatherNum)"
             >{{item.fatherName}}</span>
         </div>
@@ -80,29 +79,18 @@ export default {
             })
         },
         isClickOut(e){
-            // try{
-            //     e.path.forEach(item => {
-            //         if(item == this.$refs.cateGoryWrap){
-            //             throw new Error('StopIteration')      //如果点击的是二级菜单区域则跳出循环并在catch中return
-            //         }
-            //     })  
-            // }catch(e){
-            //     if (e.message !== 'StopIteration')  throw e
-            //     return          
-            // }
-            var flag = true
-            e.path.forEach(item => {
-                if(item == this.$refs.cateGoryWrap){
-                    flag = false
-                }
-            })  
-            // if(flag){
-                console.log(e)
-                e.target.style.background = 'red'
-                this.$refs.cateGoryWrap.style.border = '5px solid black'
-                this.fatherShow = this.oldFaterShow     //在切出时，切回父级之前样式
-                this.typeShow = false    //如果包含this.$refs.cateGoryWrap则在上方return,否则赋值false隐藏
-            // }
+            try{
+                e.path.forEach(item => {
+                    if(item == this.$refs.cateGoryWrap){
+                        throw new Error('StopIteration')      //如果点击的是二级菜单区域则跳出循环并在catch中return
+                    }
+                })  
+            }catch(e){
+                if (e.message !== 'StopIteration')  throw e
+                return          
+            }
+            this.fatherShow = this.oldFaterShow     //在切出时，切回父级之前样式
+            this.typeShow = false    //如果包含this.$refs.cateGoryWrap则在上方return,否则赋值false隐藏
         }
     }
 }
@@ -111,6 +99,7 @@ export default {
 <style scoped lang="stylus">
 @import "~common/styles/variable"
     .category
+        cursor pointer
         box-sizing border-box
         height 40px
         width 100%
@@ -131,6 +120,7 @@ export default {
                 border-radius 6px 6px 0 0 
                 color $themeColor
     .childerns
+        cursor pointer
         position absolute
         z-index 999
         width 100%
