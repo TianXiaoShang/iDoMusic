@@ -671,6 +671,7 @@ export default {
                 margin 0 auto
                 width 65%
                 border-radius 50%
+                -webkit-appearance:none    //解决ios圆角失效问题
                 overflow hidden
                 border 8px solid rgba(200,200,200,0.3)
                 .border

@@ -76,7 +76,7 @@ export default {
     width 100%
     overflow hidden
     background white
-    margin-bottom 10px
+    // margin-bottom 10px
     .song-type-name
         font-weight 600
         font-size 16px
