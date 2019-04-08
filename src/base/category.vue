@@ -80,8 +80,6 @@ export default {
             })
         },
         isClickOut(e){
-                        this.fatherShow = this.oldFaterShow     //在切出时，切回父级之前样式
-            this.typeShow = false    //如果包含this.$refs.cateGoryWrap则在上方return,否则赋值false隐藏
             try{
                 e.path.forEach(item => {
                     if(item == this.$refs.cateGoryWrap){
@@ -90,9 +88,10 @@ export default {
                 })  
             }catch(e){
                 if (e.message !== 'StopIteration')  throw e
+                            this.fatherShow = this.oldFaterShow     //在切出时，切回父级之前样式
+            this.typeShow = false    //如果包含this.$refs.cateGoryWrap则在上方return,否则赋值false隐藏
                 return          
             }
-
         }
     }
 }
