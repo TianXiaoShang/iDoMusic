@@ -80,7 +80,7 @@ export default {
         },
         isClickOut(e){
             alert(this.$refs.cateGoryWrap.className)
-            this.$refs.cateGoryWrap.style.display = 'none'
+            // this.$refs.cateGoryWrap.style.display = 'none'
             // try{
             //     e.path.forEach(item => {
             //         if(item == this.$refs.cateGoryWrap){
