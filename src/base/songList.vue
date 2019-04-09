@@ -86,7 +86,7 @@ export default {
         .listItem
             display inline-block
             box-sizing border-box
-            margin 50px 1% 6px 1%
+            margin 6px 1% 6px 1%
             vertical-align top
             // overflow hidden
             .coverWrap
