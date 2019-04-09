@@ -79,21 +79,21 @@ export default {
             })
         },
         isClickOut(e){
-            alert(this.$refs.cateGoryWrap.className)
+            // alert(this.$refs.cateGoryWrap.className)
             // this.$refs.cateGoryWrap.style.display = 'none'
-            // try{
-            //     e.path.forEach(item => {
-            //         if(item == this.$refs.cateGoryWrap){
-            //             throw new Error('StopIteration')      //如果点击的是二级菜单区域则跳出循环并在catch中return
-            //         }
-            //     })  
-            // }catch(e){
-            //     if (e.message !== 'StopIteration')  throw e
-            //     return          
-            // }
+            try{
+                e.path.forEach(item => {
+                    if(item == this.$refs.cateGoryWrap){
+                        throw new Error('StopIteration')      //如果点击的是二级菜单区域则跳出循环并在catch中return
+                    }
+                })  
+            }catch(e){
+                if (e.message !== 'StopIteration')  throw e
+                return          
+            }
             this.fatherShow = this.oldFaterShow     //在切出时，切回父级之前样式
             this.typeShow = false    //如果包含this.$refs.cateGoryWrap则在上方return,否则赋值false隐藏
-            alert(this.typeShow)
+            // alert(this.typeShow)
         }
     }
 }
