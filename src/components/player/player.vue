@@ -198,6 +198,7 @@ export default {
     created(){    //该监听方法为length + index,不行，out,等等！！！如果加上JSON.stringify呢？
         // this.$watch(() => JSON.stringify(this.playList) + this.musicId,(val,oldVla) => this._checkData())
         this.$watch(() => this.musicId,(val,oldVla) => this._initData())    //只需要监听音乐id即可
+        // document.getElementById('app').addEventListener('touchstart',this.handlePlay,false)  
     },
        
     watch:{
@@ -293,6 +294,12 @@ export default {
                 }
             })
         },
+        // handlePlay(){
+        //     if(this.playStatus && !this.lyricLock){
+        //         this.$refs.audio.play()
+        //         // this.set_playStatus(true)
+        //     } 
+        // },
         _getMusicLyric(id){
                 getMusicLyricData(id).then(res => {
                      if(res && res.statusText === STATUS_TEXT && res.data.lrc){
@@ -416,13 +423,13 @@ export default {
         },
         timeupdate(e){                                            //播放进度更新，获取当前播放进度
             this.currentTime = e.target.currentTime  //当前播放时间
-            if(!this.timer){                 //节流处理
-                this.timer = true
-                setTimeout(() => {
-                    this.lyricLock && this.myLyric && this.playStatus && this.myLyric.seek(this.$refs.audio.currentTime * 1000)  //跳转不了？？？？？？？？？？？？？
-                    this.timer = false    //开始下一次计时
-                },20)
-            }
+            // if(!this.timer){                 //节流处理
+            //     this.timer = true
+            //     setTimeout(() => {
+            //         this.lyricLock && this.myLyric && this.playStatus && this.myLyric.seek(this.$refs.audio.currentTime * 1000)  //跳转不了？？？？？？？？？？？？？
+            //         this.timer = false    //开始下一次计时
+            //     },20)
+            // }
         }, 
         ended(){                                                  //播放结束，先判断是否为单曲循环，否则自动播放下一曲
             if(this.mode === 'loop'){   
@@ -704,8 +711,15 @@ export default {
                 .currentTxt
                     padding 10px 15px
                 .currentTxt
+                    height 40px
                     font-size 16px
+                    line-height 25px
                     color white
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2; //行数
+                    -webkit-box-orient: vertical;
             .proBar
                 position absolute
                 bottom 0

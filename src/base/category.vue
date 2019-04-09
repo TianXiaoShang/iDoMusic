@@ -41,10 +41,10 @@ export default {
         this.changeType()
     },
     activated(){
-        document.getElementById('app').addEventListener('click',this.isClickOut,false)    //用于判断点击区域绑定全局touchstart事件，更改chlidrens状态
+        document.getElementById('app').addEventListener('touchstart',this.isClickOut,false)    //用于判断点击区域绑定全局touchstart事件，更改chlidrens状态
     },
     deactivated(){
-        document.getElementById('app').removeEventListener('click',this.isClickOut,false)    //用于判断点击区域绑定全局touchstart事件，更改chlidrens状态
+        document.getElementById('app').removeEventListener('touchstart',this.isClickOut,false)    //用于判断点击区域绑定全局touchstart事件，更改chlidrens状态
     },
     // beforeDestroy() {
     //     console.log('111')
