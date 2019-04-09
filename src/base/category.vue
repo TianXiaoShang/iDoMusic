@@ -79,8 +79,8 @@ export default {
             })
         },
         isClickOut(e){
-            // alert(this.$refs.cateGoryWrap.className)
-            // this.$refs.cateGoryWrap.style.display = 'none'
+            alert(this.$refs.cateGoryWrap.className)
+            this.$refs.cateGoryWrap.style.display = 'none'
             try{
                 e.path.forEach(item => {
                     if(item == this.$refs.cateGoryWrap){
@@ -93,6 +93,7 @@ export default {
             }
             this.fatherShow = this.oldFaterShow     //在切出时，切回父级之前样式
             this.typeShow = false    //如果包含this.$refs.cateGoryWrap则在上方return,否则赋值false隐藏
+            alert(this.typeShow)
         }
     }
 }
